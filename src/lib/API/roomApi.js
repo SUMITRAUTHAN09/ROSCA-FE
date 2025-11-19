@@ -39,29 +39,19 @@ export async function getRoomById(id) {
   }
 }
 
-export async function addRoom(formData) {
+export async function addRoom(payload) {
   try {
     console.log("📤 ═══════════════════════════════════════");
     console.log("📤 Sending room data to:", `${baseUrl}/rooms`);
-
-    // Log FormData contents
-    console.log("📤 FormData contents:");
-    for (let [key, value] of formData.entries()) {
-      if (value instanceof File) {
-        console.log(
-          `  ${key}: [File] ${value.name} (${value.type}, ${value.size} bytes)`
-        );
-      } else {
-        console.log(`  ${key}:`, value);
-      }
-    }
+    console.log("📤 Payload contents:", payload);
     console.log("📤 ═══════════════════════════════════════");
 
     const response = await fetch(`${baseUrl}/rooms`, {
       method: "POST",
-      // CRITICAL: Don't set Content-Type header for FormData!
-      // Browser will automatically set it with the correct boundary
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
 
     console.log("📥 Response status:", response.status);

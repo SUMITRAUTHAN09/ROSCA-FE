@@ -4,10 +4,9 @@ import { AMENITYOPTIONS, NAVIGATION_ROUTES, ROOMTYPE } from "@/app/constant";
 import FormInput from "@/components/custom/input-field";
 import { Typography } from "@/components/custom/typography";
 import { Button } from "@/components/ui/button";
-import { addRoom } from "@/lib/API/roomApi"; // should accept FormData
+import { addRoom } from "@/lib/API/roomApi";
 import { AddRoom_Fields } from "@/Store/AddRooms_Fields";
 import { ErrorMessage, Form, Formik } from "formik";
-import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import * as Yup from "yup";
 
@@ -33,10 +32,6 @@ import {
   CommandInput,
   CommandItem,
 } from "@/components/ui/command";
-
-const FILE_LIMIT_COUNT = 10;
-const IMAGE_MAX = 5 * 1024 * 1024; // 5 MB
-const VIDEO_MAX = 50 * 1024 * 1024; // 50 MB
 
 const validationSchema = Yup.object().shape({
   ownerName: Yup.string()
@@ -67,34 +62,6 @@ const validationSchema = Yup.object().shape({
     .required("Number of bathrooms is required"),
   description: Yup.string(),
   ownerRequirements: Yup.string(),
-  images: Yup.mixed()
-    .test(
-      "files-present",
-      "Please upload at least one image or video",
-      (value) => {
-        return !!value && value.length > 0;
-      }
-    )
-    .test("file-count", `Max ${FILE_LIMIT_COUNT} files allowed`, (value) => {
-      if (!value) return false;
-      return value.length <= FILE_LIMIT_COUNT;
-    })
-    .test(
-      "file-types-and-sizes",
-      "Invalid file(s): images must be ≤5MB, videos ≤50MB",
-      (value) => {
-        if (!value) return false;
-        const arr = Array.from(value);
-        for (const f of arr) {
-          if (!f.type) return false;
-          if (f.type.startsWith("image/") && f.size > IMAGE_MAX) return false;
-          if (f.type.startsWith("video/") && f.size > VIDEO_MAX) return false;
-          if (!f.type.startsWith("image/") && !f.type.startsWith("video/"))
-            return false;
-        }
-        return true;
-      }
-    ),
 });
 
 const initialValues = {
@@ -109,19 +76,9 @@ const initialValues = {
   ownerRequirements: "",
   contactNumber: "",
   ownerName: "",
-  images: [], // store as Array of File
 };
 
 export default function AddRoom() {
-  // helper to build previews (memoized)
-  const buildPreviews = (files) =>
-    (files || []).map((f) => ({
-      id: `${f.name}-${f.size}-${f.lastModified}`,
-      url: URL.createObjectURL(f),
-      type: f.type.startsWith("image/") ? "image" : "video",
-      name: f.name,
-    }));
-
   return (
     <div className="flex flex-col items-center justify-start min-h-screen w-full bg-gradient-to-b from-orange-300 via-pink-400 to-purple-600 py-6">
       <div>
@@ -137,36 +94,25 @@ export default function AddRoom() {
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             setSubmitting(true);
             try {
-              // Build FormData
-              const formData = new FormData();
-              formData.append("roomTitle", values.roomTitle.trim());
-              formData.append("location", values.location.trim());
-              formData.append("price", String(Number(values.price)));
-              formData.append("type", values.type);
-              formData.append("beds", String(values.beds || 1));
-              formData.append("bathrooms", String(values.bathrooms || 1));
-              formData.append("description", values.description?.trim() || "");
-              formData.append(
-                "ownerRequirements",
-                values.ownerRequirements?.trim() || ""
-              );
-              formData.append("contactNumber", values.contactNumber);
-              formData.append("ownerName", values.ownerName.trim());
-              // append amenities as JSON string
-              formData.append(
-                "amenities",
-                JSON.stringify(values.amenities || [])
-              );
+              // Build regular object instead of FormData
+              const payload = {
+                roomTitle: values.roomTitle.trim(),
+                location: values.location.trim(),
+                price: Number(values.price),
+                type: values.type,
+                beds: Number(values.beds) || 1,
+                bathrooms: Number(values.bathrooms) || 1,
+                description: values.description?.trim() || "",
+                ownerRequirements: values.ownerRequirements?.trim() || "",
+                contactNumber: values.contactNumber,
+                ownerName: values.ownerName.trim(),
+                amenities: values.amenities || [],
+              };
 
-              // append each file under 'images' (backend should accept multiple files with same field name)
-              if (values.images && values.images.length > 0) {
-                values.images.forEach((file) => {
-                  formData.append("images", file);
-                });
-              }
+              console.log("Sending payload:", payload); // Debug log
 
-              // call API - expecting addRoom to accept FormData and send multipart/form-data
-              const response = await addRoom(formData);
+              // call API with JSON payload
+              const response = await addRoom(payload);
 
               if (response && response.success) {
                 toast.success("Room added successfully!");
@@ -177,7 +123,6 @@ export default function AddRoom() {
                     NAVIGATION_ROUTES?.USER_PROFILE || "/user-profile";
                 }, 1000);
               } else {
-                // try show backend message if exists
                 toast.error(
                   response?.message || "Failed to add room. Please try again."
                 );
@@ -193,69 +138,12 @@ export default function AddRoom() {
           }}
         >
           {({ values, handleChange, setFieldValue, isSubmitting }) => {
-            const previews = useMemo(
-              () => buildPreviews(values.images),
-              [values.images]
-            );
-
-            // cleanup object URLs on unmount
-            useEffect(() => {
-              return () => {
-                previews.forEach((p) => URL.revokeObjectURL(p.url));
-              };
-            }, [previews]);
-
-            const handleFiles = (fileList) => {
-              if (!fileList) return;
-              const files = Array.from(fileList);
-
-              // quick client-side filter & toast for invalid files
-              const accepted = [];
-              for (const f of files) {
-                if (
-                  !f.type.startsWith("image/") &&
-                  !f.type.startsWith("video/")
-                ) {
-                  toast.error(`${f.name} is not an image or video`);
-                  continue;
-                }
-                if (f.type.startsWith("image/") && f.size > IMAGE_MAX) {
-                  toast.error(`${f.name} exceeds 5MB image limit`);
-                  continue;
-                }
-                if (f.type.startsWith("video/") && f.size > VIDEO_MAX) {
-                  toast.error(`${f.name} exceeds 50MB video limit`);
-                  continue;
-                }
-                accepted.push(f);
-              }
-
-              // combine with existing files (up to limit)
-              const combined = [...(values.images || []), ...accepted].slice(
-                0,
-                FILE_LIMIT_COUNT
-              );
-              setFieldValue("images", combined);
-            };
-
-            const removeFileAt = (index) => {
-              const newArr = [...values.images];
-              const removed = newArr.splice(index, 1);
-              // revoke created object URL(s) if any
-              removed.forEach((f) => {
-                try {
-                  const url = URL.createObjectURL(f);
-                  URL.revokeObjectURL(url);
-                } catch (e) {}
-              });
-              setFieldValue("images", newArr);
-            };
-
             return (
               <Form className="space-y-4">
-                {/* Map fields (excluding type and amenities handled below) */}
+                {/* Map fields (excluding type, amenities, and file fields) */}
                 {AddRoom_Fields.map((field) => {
-                  if (field.name === "amenities") return null;
+                  if (field.name === "amenities" || field.type === "file")
+                    return null;
 
                   if (field.type === "textarea") {
                     return (
@@ -274,60 +162,6 @@ export default function AddRoom() {
                           component="div"
                           className="text-red-500 text-sm"
                         />
-                      </div>
-                    );
-                  }
-
-                  if (field.type === "file") {
-                    return (
-                      <div key={field.id}>
-                        <label className="font-medium">{field.label}</label>
-                        <input
-                          type="file"
-                          multiple
-                          accept="image/*,video/*"
-                          onChange={(e) => handleFiles(e.target.files)}
-                          className="w-full p-2 border rounded-md bg-white"
-                        />
-                        <ErrorMessage
-                          name="images"
-                          component="div"
-                          className="text-red-500 text-sm mt-1"
-                        />
-
-                        {/* previews */}
-                        {previews.length > 0 && (
-                          <div className="mt-3 grid grid-cols-3 gap-3">
-                            {previews.map((p, idx) => (
-                              <div
-                                key={p.id}
-                                className="relative border rounded overflow-hidden"
-                              >
-                                {p.type === "image" ? (
-                                  <img
-                                    src={p.url}
-                                    alt={p.name}
-                                    className="object-cover w-full h-32"
-                                  />
-                                ) : (
-                                  <video
-                                    src={p.url}
-                                    controls
-                                    className="object-cover w-full h-32"
-                                  />
-                                )}
-                                <button
-                                  type="button"
-                                  onClick={() => removeFileAt(idx)}
-                                  className="absolute top-1 right-1 bg-white/80 rounded-full p-1 shadow"
-                                  aria-label={`Remove media ${idx}`}
-                                >
-                                  ✕
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        )}
                       </div>
                     );
                   }

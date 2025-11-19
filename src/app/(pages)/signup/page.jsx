@@ -4,13 +4,6 @@ import IMAGES from "@/app/assets/images.constant";
 import FormInput from "@/components/custom/input-field";
 import { Typography } from "@/components/custom/typography";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { signupUser } from "@/lib/API/userApi";
 import { Authentication_Fields } from "@/Store/Authentication-Input";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -42,9 +35,9 @@ export default function SignUpPage() {
       .oneOf([true], "You must accept the Terms & Conditions")
       .required("Required"),
 
-    userType: Yup.string()
-      .oneOf(["user", "host"], "Invalid user type")
-      .required("Please select a user type"),
+    //userType: Yup.string()
+    //.oneOf(["user", "host"], "Invalid user type")
+    //.required("Please select a user type"),
   });
 
   const initialValues = {
@@ -54,7 +47,7 @@ export default function SignUpPage() {
     password: "",
     confirmPassword: "",
     terms: false,
-    userType: "",
+    // userType: "",
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
@@ -64,7 +57,7 @@ export default function SignUpPage() {
         lastName: values.lastName.trim(),
         email: values.email.trim().toLowerCase(),
         password: values.password,
-        userType: values.userType,
+        //userType: values.userType,
       });
 
       if (response.success) {
@@ -139,7 +132,7 @@ export default function SignUpPage() {
                   />
                 ))}
 
-                <div className="space-y-2">
+                {/*<div className="space-y-2">
                   <label className="text-sm font-medium">User Type *</label>
 
                   <Field name="userType">
@@ -167,7 +160,7 @@ export default function SignUpPage() {
                     component="div"
                     className="text-red-500 text-sm"
                   />
-                </div>
+                </div>*/}
                 {/* Terms & Conditions checkbox */}
                 <div className="flex items-center gap-3">
                   <Field type="checkbox" name="terms" className="h-4 w-4" />
