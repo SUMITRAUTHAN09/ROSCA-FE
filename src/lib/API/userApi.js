@@ -1,5 +1,6 @@
 const baseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/api";
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "http://rosca-5shcwqmu2-nimish-agarwals-projects.vercel.app/api";
 
 export async function signupUser(userData) {
   try {
