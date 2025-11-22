@@ -20,9 +20,9 @@ export const getImageUrl = (imagePath) => {
 
 export async function getAllRooms() {
   try {
-    console.log("🔍 Fetching rooms from:", `${baseUrl} / rooms`);
+    console.log("🔍 Fetching rooms from:", `${baseUrl}/rooms`);
 
-    const response = await fetch(`${baseUrl} / rooms `, {
+    const response = await fetch(`${baseUrl}/rooms `, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
       cache: "no-store", // Disable caching for dynamic data
