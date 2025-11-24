@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet.jsx";
 
+import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import IMAGES from "../../app/assets/images.constant";
