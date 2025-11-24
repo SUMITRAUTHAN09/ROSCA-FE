@@ -1,12 +1,12 @@
 const baseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://rosca-be.vercel.app/api";
+  "https://vercel.com/sumit-rauthans-projects/rosca-be/5DT88fWtnoSRUs6upKnsQQ9tqzSs";
 
 // Helper function to get the base URL without /api suffix for static assets
 export const getServerBaseUrl = () => {
   return process.env.NEXT_PUBLIC_API_BASE_URL
     ? process.env.NEXT_PUBLIC_API_BASE_URL.replace("/api", "")
-    : "https://rosca-be.vercel.app";
+    : "https://vercel.com/sumit-rauthans-projects/rosca-be/5DT88fWtnoSRUs6upKnsQQ9tqzSs";
 };
 
 // Helper function to construct full image URL from path
