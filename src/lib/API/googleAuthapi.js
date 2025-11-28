@@ -10,7 +10,7 @@ console.log("🔗 API Base URL:", API_BASE_URL);
  */
 export const getGoogleAuthUrl = async () => {
   try {
-    const url = `${API_BASE_URL}/auth/google/url`;
+    const url = `${API_BASE_URL}/api/auth/google/url`;
     console.log("📡 Requesting Google Auth URL from:", url);
 
     const response = await axios.get(url);
