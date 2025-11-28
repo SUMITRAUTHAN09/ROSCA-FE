@@ -1,6 +1,7 @@
 "use client";
 
 import IMAGES from "@/app/assets/images.constant";
+import BackArrow from "@/components/custom/back_arrow";
 import FormInput from "@/components/custom/input-field";
 import { Typography } from "@/components/custom/typography";
 import { Button } from "@/components/ui/button";
@@ -97,6 +98,7 @@ function LoginContent() {
 
   return (
     <div className="flex w-full bg-blue rounded-lg shadow-lg overflow-hidden bg-gradient-to-b from-orange-300 via-pink-400 to-purple-600">
+      <BackArrow />
       <div className="hidden md:flex w-1/2 items-center justify-center bg-blue-900 relative">
         <div className="absolute inset-0">
           <Image
