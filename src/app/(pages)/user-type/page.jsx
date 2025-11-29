@@ -31,7 +31,16 @@ export default function UserTypePage() {
       const token = localStorage.getItem("authToken");
       const userStr = localStorage.getItem("user");
 
+      console.log('🔍 Frontend Debug - Starting request:', {
+        hasToken: !!token,
+        tokenPreview: token ? token.substring(0, 20) + '...' : 'none',
+        hasUser: !!userStr,
+        selectedType,
+        apiUrl: process.env.NEXT_PUBLIC_API_URL
+      });
+
       if (!token) {
+        console.error('❌ No auth token found');
         toast.error("Authentication required. Please login again.");
         router.push(NAVIGATION_ROUTES.LOGIN);
         return;
@@ -46,23 +55,46 @@ export default function UserTypePage() {
         }
       }
 
-      // Send the selected type directly (no mapping needed)
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/users/update-user-type`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ userType: selectedType }),
-        }
-      );
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/api/users/update-user-type`;
+      console.log('🔍 Making PATCH request to:', url);
+      console.log('🔍 Request body:', { userType: selectedType });
 
-      const data = await response.json();
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userType: selectedType }),
+      });
 
-      // Handle token errors - redirect to login
+      console.log('🔍 Response received:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+
+      // Check if response has content
+      const contentType = response.headers.get("content-type");
+      let data;
+      
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+        console.log('🔍 Response data:', data);
+      } else {
+        const text = await response.text();
+        console.error('❌ Non-JSON response:', text);
+        throw new Error(`Server returned non-JSON response (${response.status}): ${text.substring(0, 100)}`);
+      }
+
+      // Handle errors
       if (!response.ok) {
+        console.error('❌ Request failed:', {
+          status: response.status,
+          data
+        });
+
         if (
           data.tokenError ||
           response.status === 401 ||
@@ -73,8 +105,10 @@ export default function UserTypePage() {
           router.push(NAVIGATION_ROUTES.LOGIN);
           return;
         }
-        throw new Error(data.message || "Failed to update user type");
+        throw new Error(data.message || `Request failed with status ${response.status}`);
       }
+
+      console.log('✅ User type updated successfully');
 
       // Update user data in localStorage
       const updatedUser = { ...user, userType: selectedType };
@@ -99,8 +133,9 @@ export default function UserTypePage() {
         }, 1000);
       }
     } catch (error) {
-      console.error("Error updating user type:", error);
+      console.error("❌ Error updating user type:", error);
       toast.error(error.message || "Failed to update user type");
+    } finally {
       setIsSubmitting(false);
     }
   };
