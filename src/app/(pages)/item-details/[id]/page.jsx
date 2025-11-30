@@ -35,6 +35,7 @@ export default function RoomDetails({ params }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   useEffect(() => {
     fetchRoomDetails();
@@ -112,15 +113,31 @@ export default function RoomDetails({ params }) {
               <div className="relative overflow-hidden rounded-3xl shadow-2xl h-[450px] group">
                 {room.images && room.images.length > 0 ? (
                   <>
-                    <Image
-                      src={getImageUrl(room.images[currentImageIndex])}
-                      alt={room.roomTitle}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      unoptimized={process.env.NODE_ENV === "development"}
-                    />
+                    <div 
+                      onClick={() => setIsFullScreen(true)}
+                      className="cursor-zoom-in"
+                    >
+                      <Image
+                        src={getImageUrl(room.images[currentImageIndex])}
+                        alt={room.roomTitle}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        unoptimized={process.env.NODE_ENV === "development"}
+                      />
+                    </div>
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+                    
+                    {/* Expand Icon */}
+                    <button
+                      onClick={() => setIsFullScreen(true)}
+                      className="absolute bottom-6 right-6 bg-white/95 backdrop-blur-sm hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+                      title="View fullscreen"
+                    >
+                      <svg className="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                      </svg>
+                    </button>
                     
                     {/* Image Counter Badge */}
                     <div className="absolute top-6 right-6 bg-white/95 backdrop-blur-sm text-gray-800 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
@@ -132,7 +149,7 @@ export default function RoomDetails({ params }) {
                       <>
                         <button
                           onClick={() => setCurrentImageIndex((prev) => (prev === 0 ? room.images.length - 1 : prev - 1))}
-                          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110"
+                          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
                         >
                           <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -140,7 +157,7 @@ export default function RoomDetails({ params }) {
                         </button>
                         <button
                           onClick={() => setCurrentImageIndex((prev) => (prev === room.images.length - 1 ? 0 : prev + 1))}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110"
+                          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
                         >
                           <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
