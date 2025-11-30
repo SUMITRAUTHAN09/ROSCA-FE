@@ -26,7 +26,7 @@ export default function UserTypePage() {
     }
 
     setIsSubmitting(true);
-
+    //try & catch
     try {
       const token = localStorage.getItem("authToken");
       const userStr = localStorage.getItem("user");
