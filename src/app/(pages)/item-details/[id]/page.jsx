@@ -41,6 +41,24 @@ export default function RoomDetails({ params }) {
     fetchRoomDetails();
   }, [id]);
 
+  // Keyboard navigation for fullscreen
+  useEffect(() => {
+    if (!isFullScreen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsFullScreen(false);
+      } else if (e.key === 'ArrowLeft' && room?.images?.length > 1) {
+        setCurrentImageIndex((prev) => (prev === 0 ? room.images.length - 1 : prev - 1));
+      } else if (e.key === 'ArrowRight' && room?.images?.length > 1) {
+        setCurrentImageIndex((prev) => (prev === room.images.length - 1 ? 0 : prev + 1));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFullScreen, room?.images?.length]);
+
   const fetchRoomDetails = async () => {
     try {
       setLoading(true);
@@ -358,6 +376,109 @@ export default function RoomDetails({ params }) {
       </main>
 
       <Footer />
+
+      {/* Fullscreen Image Modal */}
+      {isFullScreen && room.images && room.images.length > 0 && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
+          onClick={() => setIsFullScreen(false)}
+        >
+          {/* Close Button */}
+          <button
+            onClick={() => setIsFullScreen(false)}
+            className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-3 rounded-full transition-all hover:scale-110 z-20"
+            title="Close (ESC)"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          {/* Image Counter */}
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-sm text-white px-6 py-3 rounded-full text-sm font-semibold z-20">
+            {currentImageIndex + 1} / {room.images.length}
+          </div>
+
+          {/* Main Fullscreen Image */}
+          <div 
+            className="relative w-full h-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={getImageUrl(room.images[currentImageIndex])}
+              alt={room.roomTitle}
+              fill
+              className="object-contain"
+              unoptimized={process.env.NODE_ENV === "development"}
+            />
+          </div>
+
+          {/* Navigation Arrows for Fullscreen */}
+          {room.images.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentImageIndex((prev) => (prev === 0 ? room.images.length - 1 : prev - 1));
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-4 rounded-full transition-all hover:scale-110 z-20"
+                title="Previous (←)"
+              >
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentImageIndex((prev) => (prev === room.images.length - 1 ? 0 : prev + 1));
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-4 rounded-full transition-all hover:scale-110 z-20"
+                title="Next (→)"
+              >
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
+
+          {/* Thumbnail Strip at Bottom */}
+          {room.images.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 max-w-4xl w-full px-4">
+              <div className="flex gap-2 overflow-x-auto pb-2 justify-center scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+                {room.images.map((image, index) => (
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentImageIndex(index);
+                    }}
+                    className={`relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
+                      currentImageIndex === index
+                        ? "border-white scale-105"
+                        : "border-white/30 hover:border-white/60 opacity-60 hover:opacity-100"
+                    }`}
+                  >
+                    <Image
+                      src={getImageUrl(image)}
+                      alt={`Thumbnail ${index + 1}`}
+                      fill
+                      className="object-cover"
+                      unoptimized={process.env.NODE_ENV === "development"}
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Instructions */}
+          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 text-white/60 text-sm font-medium">
+            Press ESC to close • Click outside to exit
+          </div>
+        </div>
+      )}
     </>
   );
 }
