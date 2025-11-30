@@ -114,21 +114,24 @@ export default function UserTypePage() {
       const updatedUser = { ...user, userType: selectedType };
       localStorage.setItem("user", JSON.stringify(updatedUser));
 
-      // Show success toast and redirect to the same page for both types
+      // Show success toast and redirect based on user type
       if (selectedType === "user") {
         toast.success("Role Selected! USER", {
           description: "Redirecting to browse rooms...",
         });
+        // Redirect to uipage2 for regular users
+        setTimeout(() => {
+          router.push("/uipage2");
+        }, 1000);
       } else if (selectedType === "host") {
         toast.success("Role Selected! HOST", {
-          description: "Redirecting to browse rooms...",
+          description: "Redirecting to manage properties...",
         });
+        // Redirect to uipage for hosts
+        setTimeout(() => {
+          router.push(NAVIGATION_ROUTES.UIPAGE);
+        }, 1000);
       }
-
-      // Redirect both user types to the same page
-      setTimeout(() => {
-        router.push(NAVIGATION_ROUTES.UIPAGE);
-      }, 1000);
 
     } catch (error) {
       console.error("❌ Error updating user type:", error);
