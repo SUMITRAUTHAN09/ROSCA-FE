@@ -3,9 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Typography } from "@/components/custom/typography";
-import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, Home, Key, ArrowRight, Sparkles } from "lucide-react";
 import { NAVIGATION_ROUTES } from "@/app/constant";
 
 export default function UserTypePage() {
@@ -75,7 +73,6 @@ export default function UserTypePage() {
         headers: Object.fromEntries(response.headers.entries())
       });
 
-      // Check if response has content
       const contentType = response.headers.get("content-type");
       let data;
       
@@ -88,7 +85,6 @@ export default function UserTypePage() {
         throw new Error(`Server returned non-JSON response (${response.status}): ${text.substring(0, 100)}`);
       }
 
-      // Handle errors
       if (!response.ok) {
         console.error('❌ Request failed:', {
           status: response.status,
@@ -110,16 +106,13 @@ export default function UserTypePage() {
 
       console.log('✅ User type updated successfully');
 
-      // Update user data in localStorage
       const updatedUser = { ...user, userType: selectedType };
       localStorage.setItem("user", JSON.stringify(updatedUser));
 
-      // Show success toast and redirect based on user type
       if (selectedType === "user") {
         toast.success("Role Selected! USER", {
           description: "Redirecting to browse rooms...",
         });
-        // Redirect to uipage2 for regular users
         setTimeout(() => {
           router.push("/uipage2");
         }, 1000);
@@ -127,7 +120,6 @@ export default function UserTypePage() {
         toast.success("Role Selected! HOST", {
           description: "Redirecting to manage properties...",
         });
-        // Redirect to uipage for hosts
         setTimeout(() => {
           router.push(NAVIGATION_ROUTES.UIPAGE);
         }, 1000);
@@ -142,98 +134,205 @@ export default function UserTypePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-orange-300 via-pink-400 to-purple-600 p-10">
-      <div className="max-w-4xl w-full bg-white/60 backdrop-blur-md p-10 rounded-2xl shadow-2xl border border-black/40">
-        <Typography variant="h2" className="text-center mb-12 text-gray-800">
-          What Are You Looking For?
-        </Typography>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+      </div>
 
+      <div className="max-w-5xl w-full relative z-10">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4 border border-white/30">
+            <Sparkles className="w-4 h-4 text-yellow-300" />
+            <span className="text-white text-sm font-medium">Welcome to RoomFinder</span>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
+            Choose Your Path
+          </h1>
+          <p className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto">
+            Select the option that best describes what you're looking for today
+          </p>
+        </div>
+
+        {/* Cards Container */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
-          {/* User/Tenant Option */}
+          {/* User/Tenant Card */}
           <button
             onClick={() => handleTypeChange("user")}
             disabled={isSubmitting}
             className={`
-              relative h-auto min-h-[220px] cursor-pointer text-left
-              flex flex-col items-start gap-4 rounded-lg border-2 p-6
-              transition-all duration-200 hover:shadow-lg overflow-hidden
-              disabled:opacity-50 disabled:cursor-not-allowed
-              ${
-                selectedType === "user"
-                  ? "border-blue-600 bg-blue-50 shadow-md"
-                  : "border-blue-600 bg-blue-400 hover:border-blue-700"
+              group relative overflow-hidden rounded-2xl transition-all duration-300
+              ${selectedType === "user" 
+                ? "scale-105 shadow-2xl" 
+                : "hover:scale-102 shadow-xl hover:shadow-2xl"
               }
+              disabled:opacity-50 disabled:cursor-not-allowed
             `}
           >
-            {selectedType === "user" && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-                <div className="bg-blue-600/20 rounded-full p-4 animate-in zoom-in duration-300">
-                  <Check className="w-24 h-24 text-black stroke-[4]" />
-                </div>
+            <div className={`
+              relative bg-gradient-to-br p-8 h-full min-h-[280px]
+              flex flex-col justify-between
+              ${selectedType === "user"
+                ? "from-blue-500 to-cyan-400"
+                : "from-blue-600 to-cyan-500"
+              }
+            `}>
+              {/* Background Pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
+                  backgroundSize: '32px 32px'
+                }}></div>
               </div>
-            )}
 
-            <div className="relative grid gap-2 w-full z-10">
-              <Typography
-                variant="h4"
-                className="text-lg font-semibold text-gray-800"
-              >
-                I am looking for rental rooms
-              </Typography>
-              <Typography variant="paraPrimary" className="text-sm text-gray-600">
-                You can search and browse properties available for rent.
-              </Typography>
+              {/* Content */}
+              <div className="relative z-10">
+                <div className={`
+                  inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6
+                  transition-all duration-300
+                  ${selectedType === "user" 
+                    ? "bg-white shadow-lg scale-110" 
+                    : "bg-white/20 backdrop-blur-sm group-hover:bg-white/30"
+                  }
+                `}>
+                  <Home className={`w-8 h-8 ${selectedType === "user" ? "text-blue-600" : "text-white"}`} />
+                </div>
+
+                <h3 className="text-2xl font-bold text-white mb-3">
+                  Find a Room
+                </h3>
+                <p className="text-white/90 text-base leading-relaxed">
+                  Browse and discover the perfect rental space that fits your needs and budget.
+                </p>
+              </div>
+
+              {/* Selected Indicator */}
+              {selectedType === "user" && (
+                <div className="absolute top-6 right-6 bg-white rounded-full p-2 shadow-lg">
+                  <Check className="w-6 h-6 text-blue-600 stroke-[3]" />
+                </div>
+              )}
+
+              {/* Hover Arrow */}
+              <div className={`
+                relative z-10 mt-6 flex items-center gap-2 text-white font-semibold
+                transition-all duration-300
+                ${selectedType === "user" ? "translate-x-2" : "group-hover:translate-x-2"}
+              `}>
+                <span>I'm looking for a room</span>
+                <ArrowRight className="w-5 h-5" />
+              </div>
             </div>
           </button>
 
-          {/* Host/Landlord Option */}
+          {/* Host/Landlord Card */}
           <button
             onClick={() => handleTypeChange("host")}
             disabled={isSubmitting}
             className={`
-              relative h-auto min-h-[220px] cursor-pointer text-left
-              flex flex-col items-start gap-4 rounded-lg border-2 p-6
-              transition-all duration-200 hover:shadow-lg overflow-hidden
-              disabled:opacity-50 disabled:cursor-not-allowed
-              ${
-                selectedType === "host"
-                  ? "border-red-600 bg-red-50 shadow-md"
-                  : "border-red-600 bg-red-400 hover:border-red-700"
+              group relative overflow-hidden rounded-2xl transition-all duration-300
+              ${selectedType === "host" 
+                ? "scale-105 shadow-2xl" 
+                : "hover:scale-102 shadow-xl hover:shadow-2xl"
               }
+              disabled:opacity-50 disabled:cursor-not-allowed
             `}
           >
-            {selectedType === "host" && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-                <div className="bg-red-600/20 rounded-full p-4 animate-in zoom-in duration-300">
-                  <Check className="w-24 h-24 text-black stroke-[4]" />
-                </div>
+            <div className={`
+              relative bg-gradient-to-br p-8 h-full min-h-[280px]
+              flex flex-col justify-between
+              ${selectedType === "host"
+                ? "from-rose-500 to-orange-400"
+                : "from-rose-600 to-orange-500"
+              }
+            `}>
+              {/* Background Pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
+                  backgroundSize: '32px 32px'
+                }}></div>
               </div>
-            )}
 
-            <div className="relative grid gap-2 w-full z-10">
-              <Typography
-                variant="h4"
-                className="text-lg font-semibold text-gray-800"
-              >
-                I want to add/host rooms
-              </Typography>
-              <Typography variant="paraPrimary" className="text-sm text-gray-600">
-                You can list and manage properties you want to rent out.
-              </Typography>
+              {/* Content */}
+              <div className="relative z-10">
+                <div className={`
+                  inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6
+                  transition-all duration-300
+                  ${selectedType === "host" 
+                    ? "bg-white shadow-lg scale-110" 
+                    : "bg-white/20 backdrop-blur-sm group-hover:bg-white/30"
+                  }
+                `}>
+                  <Key className={`w-8 h-8 ${selectedType === "host" ? "text-rose-600" : "text-white"}`} />
+                </div>
+
+                <h3 className="text-2xl font-bold text-white mb-3">
+                  List Your Property
+                </h3>
+                <p className="text-white/90 text-base leading-relaxed">
+                  Become a host and start earning by renting out your available spaces.
+                </p>
+              </div>
+
+              {/* Selected Indicator */}
+              {selectedType === "host" && (
+                <div className="absolute top-6 right-6 bg-white rounded-full p-2 shadow-lg">
+                  <Check className="w-6 h-6 text-rose-600 stroke-[3]" />
+                </div>
+              )}
+
+              {/* Hover Arrow */}
+              <div className={`
+                relative z-10 mt-6 flex items-center gap-2 text-white font-semibold
+                transition-all duration-300
+                ${selectedType === "host" ? "translate-x-2" : "group-hover:translate-x-2"}
+              `}>
+                <span>I want to host rooms</span>
+                <ArrowRight className="w-5 h-5" />
+              </div>
             </div>
           </button>
         </div>
 
         {/* Submit Button */}
         <div className="flex justify-center">
-          <Button
+          <button
             onClick={handleSubmit}
             disabled={!selectedType || isSubmitting}
-            className="px-8 py-6 text-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`
+              px-12 py-4 rounded-full text-lg font-semibold
+              transition-all duration-300 transform
+              ${selectedType
+                ? "bg-white text-purple-600 hover:bg-opacity-90 hover:scale-105 shadow-xl hover:shadow-2xl"
+                : "bg-white/30 text-white/50 cursor-not-allowed"
+              }
+              disabled:hover:scale-100 disabled:hover:shadow-xl
+            `}
           >
-            {isSubmitting ? "Updating..." : "Continue"}
-          </Button>
+            {isSubmitting ? (
+              <span className="flex items-center gap-2">
+                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                Processing...
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                Continue
+                <ArrowRight className="w-5 h-5" />
+              </span>
+            )}
+          </button>
         </div>
+
+        {/* Bottom Text */}
+        <p className="text-center text-white/70 text-sm mt-8">
+          You can always change your selection later in settings
+        </p>
       </div>
     </div>
   );
