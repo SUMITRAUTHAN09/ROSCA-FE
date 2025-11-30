@@ -56,6 +56,7 @@ export default function RoomDetails({ params }) {
       <>
         <Header />
         <div className="flex items-center justify-center min-h-screen pt-32">
+          <BackArrow />
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
             <Typography variant="paraPrimary" className="mt-4">

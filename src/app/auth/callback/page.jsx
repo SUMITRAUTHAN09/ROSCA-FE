@@ -68,6 +68,7 @@ function CallbackContent() {
           
           toast.success(`Welcome, ${userData.firstName}!`);
           
+<<<<<<< HEAD
 >>>>>>> 05596742aad24ad40e030264ed65ebec9567041e
           // Force full page reload to reinitialize auth state
           setTimeout(() => {
@@ -79,6 +80,20 @@ function CallbackContent() {
           toast.error("Failed to complete sign in");
 
 =======
+=======
+          // Check if user has already selected a type
+          if (userData.userType) {
+            // User already has a type, go directly to UIPAGE
+            setTimeout(() => {
+              window.location.href = NAVIGATION_ROUTES.UIPAGE;
+            }, 800);
+          } else {
+            // New user or user without type, go to user-type selection
+            setTimeout(() => {
+              window.location.href = NAVIGATION_ROUTES.USER_TYPE;
+            }, 800);
+          }
+>>>>>>> 6c780c1639deec705f3ec3a7003a5f6173f346d5
           
         } catch (err) {
           console.error('Error processing callback:', err);

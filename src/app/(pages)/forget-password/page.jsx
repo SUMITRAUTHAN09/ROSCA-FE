@@ -48,41 +48,43 @@ export default function ForgetPasswordPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen w-full bg-gray-200">
-      <BackArrow />
-      <div className="w-full max-w-md p-10 bg-white/60 backdrop-blur-md border border-black/40 rounded-2xl shadow-2xl mx-4">
-        <Typography variant="h4" className="ml-20">
-          Forgot Password
-        </Typography>
+      <div className="flex items-center justify-center min-h-screen w-full bg-gradient-to-b from-orange-300 via-pink-400 to-purple-600">
+        <BackArrow />
+        <div className="w-full max-w-md p-10 bg-white/60 backdrop-blur-md border border-black/40 rounded-2xl shadow-2xl mx-4">
+          <Typography variant="h4" className="ml-20">
+            Forgot Password
+          </Typography>
 
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ isSubmitting }) => (
-            <Form className="space-y-4">
-              <FormInput
-                name="email"
-                label="Email"
-                type="email"
-                placeholder="Enter your email"
-              />
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition cursor-pointer font-semibold"
-              >
-                {isSubmitting ? "Sending OTP..." : "Send OTP"}
-              </Button>
-            </Form>
-          )}
-        </Formik>
-        <Typography variant="paraSecondary" className="ml-30 mt-4">
-          {"< "}Go to{" "}
-          <Link href="/login" className="text-blue-600 hover:text-blue-700">
-            {LOGIN}
-          </Link>
-        </Typography>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+          >
+            {({ isSubmitting }) => (
+              <Form className="space-y-4">
+                <FormInput
+                  name="email"
+                  label="Email"
+                  type="email"
+                  placeholder="Enter your email"
+                />
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition cursor-pointer font-semibold"
+                >
+                  {isSubmitting ? "Sending OTP..." : "Send OTP"}
+                </Button>
+              </Form>
+            )}
+          </Formik>
+          <Typography variant="paraSecondary" className="ml-30 mt-4">
+            {"< "}Go to{" "}
+            <Link href="/login" className="text-blue-600 hover:text-blue-700">
+              {LOGIN}
+            </Link>
+          </Typography>
+        </div>
       </div>
     </div>
   );
