@@ -18,10 +18,10 @@ export const getImageUrl = (imagePath) => {
   return `${getServerBaseUrl()}${imagePath}`;
 };
 
-// Helper function to get auth token
+// ✅ FIXED: Helper function to get auth token (changed from 'token' to 'authToken')
 const getAuthToken = () => {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem('authToken'); // ✅ Changed from 'token' to 'authToken'
   }
   return null;
 };
@@ -85,7 +85,7 @@ export async function getRoomById(id) {
   }
 }
 
-// ✅ NEW: Get user's rooms
+// ✅ Get user's rooms
 export async function getUserRooms() {
   try {
     console.log("🏠 Fetching user rooms...");
@@ -119,6 +119,7 @@ export async function getUserRooms() {
   }
 }
 
+// ✅ ENHANCED: Add room with detailed error logging
 export async function addRoom(formData) {
   try {
     console.log("📤 ═══════════════════════════════════════");
@@ -131,6 +132,9 @@ export async function addRoom(formData) {
     console.log("📤 ═══════════════════════════════════════");
 
     const token = getAuthToken();
+    console.log("🔑 Token found:", token ? "Yes ✅" : "No ❌");
+    console.log("🔑 Token preview:", token ? token.substring(0, 20) + "..." : "null");
+
     if (!token) {
       throw new Error("No authentication token found. Please login.");
     }
@@ -138,25 +142,46 @@ export async function addRoom(formData) {
     const response = await fetch(`${baseUrl}/rooms`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${token}` // ✅ Add auth token
+        "Authorization": `Bearer ${token}`
       },
       body: formData,
       // DO NOT set Content-Type header; browser sets it automatically for multipart/form-data
     });
 
     console.log("📥 Response status:", response.status);
+    console.log("📥 Response headers:", Object.fromEntries(response.headers.entries()));
+
+    // Get the response text first to see what we're working with
+    const responseText = await response.text();
+    console.log("📥 Raw response:", responseText);
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error("❌ Server error:", errorData);
-      throw new Error(errorData.message || "Failed to add room");
+      let errorData;
+      try {
+        errorData = JSON.parse(responseText);
+      } catch (e) {
+        errorData = { message: responseText || "Unknown server error" };
+      }
+      
+      console.error("❌ ═══════════════════════════════════════");
+      console.error("❌ Server returned error status:", response.status);
+      console.error("❌ Error details:", errorData);
+      console.error("❌ Full response:", responseText);
+      console.error("❌ ═══════════════════════════════════════");
+      
+      throw new Error(errorData.message || `Server Error: ${response.status}`);
     }
 
-    const data = await response.json();
+    const data = JSON.parse(responseText);
     console.log("✅ Success:", data);
     return data;
   } catch (error) {
+    console.error("❌ ═══════════════════════════════════════");
     console.error("❌ Add room error:", error);
+    console.error("❌ Error name:", error.name);
+    console.error("❌ Error message:", error.message);
+    console.error("❌ Error stack:", error.stack);
+    console.error("❌ ═══════════════════════════════════════");
     throw error;
   }
 }
@@ -174,7 +199,7 @@ export async function updateRoom(id, roomData) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}` // ✅ Add auth token
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(roomData),
     });
@@ -207,7 +232,7 @@ export async function deleteRoom(id) {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}` // ✅ Add auth token
+        "Authorization": `Bearer ${token}`
       },
     });
 
