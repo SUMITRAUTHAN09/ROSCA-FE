@@ -1,4 +1,13 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
+/**
+ * Get authentication token from localStorage
+ */
+const getAuthToken = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("authToken");
+  }
+  return null;
+};
 
 /**
  * Get user's wishlist
