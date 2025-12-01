@@ -12,8 +12,8 @@ import { toast } from "sonner";
 import { NAVIGATION_ROUTES } from "../../constant";
 import { getCurrentUserInfo, uploadProfilePicture, getUserRooms } from "@/lib/API/userApi";
 import { deleteRoom as deleteRoomApi } from "@/lib/API/roomApi";
-import ViewRoomModal from "@/components/custom/view-room-modal";
-import EditRoomModal from "@/components/custom/edit-room-modal";
+import ViewRoomModal from "@/components/custom/ViewRoomModal";
+import EditRoomModal from "@/components/custom/EditRoomModal";
 
 export default function ProfilePage() {
   const { rooms, setRooms, updateRoom: updateRoomStore } = useRoomStore();
