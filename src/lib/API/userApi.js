@@ -1,4 +1,3 @@
-// src/lib/API/userApi.js
 import axios from 'axios';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://rosca-be.vercel.app/api';
@@ -13,27 +12,65 @@ const getAuthToken = () => {
   return null;
 };
 
-// Create axios instance with auth headers
+// Create axios instance with auth headers for protected routes
 const createAuthInstance = () => {
   const token = getAuthToken();
   return axios.create({
     baseURL: API_BASE_URL,
     headers: {
-      'Authorization': token ? `Bearer ${token}` : '',
+      Authorization: token ? `Bearer ${token}` : '',
     },
   });
 };
 
 /**
- * Get current user info
+ * Signup new user - public endpoint
+ * @param {object} userData
+ */
+export const signupUser = async (userData) => {
+  try {
+    console.log('📝 Signing up user:', userData.email);
+    const response = await axios.post(`${API_BASE_URL}/users/signup`, userData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log('✅ Signup successful:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Signup error:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'Signup failed');
+  }
+};
+
+/**
+ * Login user - public endpoint
+ * @param {object} credentials
+ */
+export const loginUser = async (credentials) => {
+  try {
+    console.log('🔐 Logging in user:', credentials.email);
+    const response = await axios.post(`${API_BASE_URL}/users/login`, credentials, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log('✅ Login successful');
+    return response.data;
+  } catch (error) {
+    console.error('❌ Login error:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'Login failed');
+  }
+};
+
+/**
+ * Get current user info - protected endpoint
  */
 export const getCurrentUserInfo = async () => {
   try {
     console.log('🔍 Fetching current user info...');
-    
     const instance = createAuthInstance();
     const response = await instance.get('/users/me');
-    
     console.log('✅ User info fetched:', response.data.user);
     return response.data;
   } catch (error) {
@@ -43,7 +80,7 @@ export const getCurrentUserInfo = async () => {
 };
 
 /**
- * Upload profile picture
+ * Upload profile picture - protected endpoint
  * @param {File} file - Image file to upload
  */
 export const uploadProfilePicture = async (file) => {
@@ -51,9 +88,7 @@ export const uploadProfilePicture = async (file) => {
     if (!file) {
       throw new Error('No file provided');
     }
-
     console.log('📤 Uploading profile picture...', file.name);
-
     const formData = new FormData();
     formData.append('profilePicture', file);
 
@@ -67,15 +102,13 @@ export const uploadProfilePicture = async (file) => {
       formData,
       {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       }
     );
 
     console.log('✅ Profile picture uploaded successfully:', response.data);
-    
-    // Update user in localStorage
     if (response.data.user) {
       localStorage.setItem('user', JSON.stringify(response.data.user));
       localStorage.setItem('authToken', response.data.token || token);
@@ -84,13 +117,12 @@ export const uploadProfilePicture = async (file) => {
     return response.data;
   } catch (error) {
     console.error('❌ Error uploading profile picture:', error);
-    console.error('❌ Error details:', error.response?.data || error.message);
     throw new Error(error.response?.data?.message || 'Failed to upload profile picture');
   }
 };
 
 /**
- * Update user type (host/user)
+ * Update user type (host/user) - protected endpoint
  * @param {string} userType - 'host' or 'user'
  */
 export const updateUserType = async (userType) => {
@@ -102,13 +134,9 @@ export const updateUserType = async (userType) => {
     console.log('🔄 Updating user type to:', userType);
 
     const instance = createAuthInstance();
-    const response = await instance.patch('/users/update-user-type', {
-      userType,
-    });
+    const response = await instance.patch('/users/update-user-type', { userType });
 
     console.log('✅ User type updated:', response.data);
-    
-    // Update user in localStorage
     if (response.data.user) {
       localStorage.setItem('user', JSON.stringify(response.data.user));
     }
@@ -121,37 +149,17 @@ export const updateUserType = async (userType) => {
 };
 
 /**
- * Get user's rooms
- */
-export const getUserRooms = async () => {
-  try {
-    console.log('🏠 Fetching user rooms...');
-
-    const instance = createAuthInstance();
-    const response = await instance.get('/rooms/user/my-rooms');
-
-    console.log('✅ User rooms fetched:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('❌ Error fetching user rooms:', error);
-    throw new Error(error.response?.data?.message || 'Failed to fetch user rooms');
-  }
-};
-
-/**
- * Logout user
+ * Logout user - client-side only
  */
 export const logoutUser = async () => {
   try {
     console.log('👋 Logging out user...');
-
     if (typeof window !== 'undefined') {
       localStorage.removeItem('user');
       localStorage.removeItem('authToken');
       localStorage.removeItem('userLoggedIn');
       console.log('✅ User logged out successfully');
     }
-
     return { success: true };
   } catch (error) {
     console.error('❌ Error during logout:', error);
