@@ -1,6 +1,5 @@
 const baseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://rosca-be.vercel.app/api";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://rosca-be.vercel.app/api";
 
 // Helper function to get the base URL without /api suffix for static assets
 export const getServerBaseUrl = () => {
@@ -20,8 +19,8 @@ export const getImageUrl = (imagePath) => {
 
 // ✅ Helper function to get auth token
 const getAuthToken = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('authToken');
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("authToken");
   }
   return null;
 };
@@ -30,8 +29,8 @@ const getAuthToken = () => {
 const getAuthHeaders = () => {
   const token = getAuthToken();
   return {
-    'Content-Type': 'application/json',
-    ...(token && { 'Authorization': `Bearer ${token}` })
+    "Content-Type": "application/json",
+    ...(token && { Authorization: `Bearer ${token}` }),
   };
 };
 
@@ -101,7 +100,7 @@ export async function getUserRooms() {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       cache: "no-store",
     });
@@ -143,10 +142,9 @@ export async function addRoom(formData) {
     const response = await fetch(`${baseUrl}/rooms`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: formData,
-      // DO NOT set Content-Type header; browser sets it automatically for multipart/form-data
     });
 
     console.log("📥 Response status:", response.status);
@@ -162,12 +160,12 @@ export async function addRoom(formData) {
       } catch (e) {
         errorData = { message: responseText || "Unknown server error" };
       }
-      
+
       console.error("❌ ═══════════════════════════════════════");
       console.error("❌ Server returned error status:", response.status);
       console.error("❌ Error details:", errorData);
       console.error("❌ ═══════════════════════════════════════");
-      
+
       throw new Error(errorData.message || `Server Error: ${response.status}`);
     }
 
@@ -188,7 +186,7 @@ export async function updateRoom(id, roomData) {
     console.log("🔄 ═══════════════════════════════════════");
     console.log("🔄 Updating room ID:", id);
     console.log("🔄 Update data:", roomData);
-    
+
     const token = getAuthToken();
 
     if (!token) {
@@ -199,7 +197,7 @@ export async function updateRoom(id, roomData) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(roomData),
     });
@@ -240,7 +238,7 @@ export async function updateRoomWithImages(id, formData) {
     const response = await fetch(`${baseUrl}/rooms/${id}`, {
       method: "PUT",
       headers: {
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
         // DO NOT set Content-Type for FormData
       },
       body: formData,
@@ -266,7 +264,7 @@ export async function deleteRoom(id) {
   try {
     console.log("🗑 ═══════════════════════════════════════");
     console.log("🗑 Deleting room ID:", id);
-    
+
     const token = getAuthToken();
 
     if (!token) {
@@ -277,7 +275,7 @@ export async function deleteRoom(id) {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
 

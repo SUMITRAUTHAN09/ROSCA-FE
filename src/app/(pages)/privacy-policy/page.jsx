@@ -10,7 +10,6 @@ export default function PrivacyPolicy() {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-16 px-6">
       <BackArrow />
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-8 md:p-10">
-        {/* Header */}
         <div className="text-center mb-12">
           <Typography variant="h1" className="block">
             Privacy Policy

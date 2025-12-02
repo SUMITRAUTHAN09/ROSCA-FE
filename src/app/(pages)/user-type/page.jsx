@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { Check, Home, Key, ArrowRight, Sparkles } from "lucide-react";
 import { NAVIGATION_ROUTES } from "@/app/constant";
+import { ArrowRight, Check, Home, Key, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function UserTypePage() {
   const [selectedType, setSelectedType] = useState(null);
@@ -29,16 +29,16 @@ export default function UserTypePage() {
       const token = localStorage.getItem("authToken");
       const userStr = localStorage.getItem("user");
 
-      console.log('🔍 Frontend Debug - Starting request:', {
+      console.log("🔍 Frontend Debug - Starting request:", {
         hasToken: !!token,
-        tokenPreview: token ? token.substring(0, 20) + '...' : 'none',
+        tokenPreview: token ? token.substring(0, 20) + "..." : "none",
         hasUser: !!userStr,
         selectedType,
-        apiUrl: process.env.NEXT_PUBLIC_API_BASE_URL
+        apiUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
       });
 
       if (!token) {
-        console.error('❌ No auth token found');
+        console.error("❌ No auth token found");
         toast.error("Authentication required. Please login again.");
         router.push(NAVIGATION_ROUTES.LOGIN);
         return;
@@ -54,8 +54,8 @@ export default function UserTypePage() {
       }
 
       const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/update-user-type`;
-      console.log('🔍 Making PATCH request to:', url);
-      console.log('🔍 Request body:', { userType: selectedType });
+      console.log("🔍 Making PATCH request to:", url);
+      console.log("🔍 Request body:", { userType: selectedType });
 
       const response = await fetch(url, {
         method: "PATCH",
@@ -66,29 +66,33 @@ export default function UserTypePage() {
         body: JSON.stringify({ userType: selectedType }),
       });
 
-      console.log('🔍 Response received:', {
+      console.log("🔍 Response received:", {
         status: response.status,
         statusText: response.statusText,
         ok: response.ok,
-        headers: Object.fromEntries(response.headers.entries())
+        headers: Object.fromEntries(response.headers.entries()),
       });
 
       const contentType = response.headers.get("content-type");
       let data;
-      
+
       if (contentType && contentType.includes("application/json")) {
         data = await response.json();
-        console.log('🔍 Response data:', data);
+        console.log("🔍 Response data:", data);
       } else {
         const text = await response.text();
-        console.error('❌ Non-JSON response:', text);
-        throw new Error(`Server returned non-JSON response (${response.status}): ${text.substring(0, 100)}`);
+        console.error("❌ Non-JSON response:", text);
+        throw new Error(
+          `Server returned non-JSON response (${
+            response.status
+          }): ${text.substring(0, 100)}`
+        );
       }
 
       if (!response.ok) {
-        console.error('❌ Request failed:', {
+        console.error("❌ Request failed:", {
           status: response.status,
-          data
+          data,
         });
 
         if (
@@ -101,10 +105,12 @@ export default function UserTypePage() {
           router.push(NAVIGATION_ROUTES.LOGIN);
           return;
         }
-        throw new Error(data.message || `Request failed with status ${response.status}`);
+        throw new Error(
+          data.message || `Request failed with status ${response.status}`
+        );
       }
 
-      console.log('✅ User type updated successfully');
+      console.log("✅ User type updated successfully");
 
       const updatedUser = { ...user, userType: selectedType };
       localStorage.setItem("user", JSON.stringify(updatedUser));
@@ -114,17 +120,16 @@ export default function UserTypePage() {
           description: "Redirecting to browse rooms...",
         });
         setTimeout(() => {
-          router.push("/uipage2");
+          router.push("/user-uipage");
         }, 1000);
       } else if (selectedType === "host") {
         toast.success("Role Selected! HOST", {
           description: "Redirecting to manage properties...",
         });
         setTimeout(() => {
-          router.push(NAVIGATION_ROUTES.UIPAGE);
+          router.push("/host-uipage");
         }, 1000);
       }
-
     } catch (error) {
       console.error("❌ Error updating user type:", error);
       toast.error(error.message || "Failed to update user type");
@@ -142,11 +147,12 @@ export default function UserTypePage() {
       </div>
 
       <div className="max-w-5xl w-full relative z-10">
-        {/* Header Section */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4 border border-white/30">
             <Sparkles className="w-4 h-4 text-yellow-300" />
-            <span className="text-white text-sm font-medium">Welcome to RoomFinder</span>
+            <span className="text-white text-sm font-medium">
+              Welcome to RoomFinder
+            </span>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
             Choose Your Path
@@ -164,47 +170,62 @@ export default function UserTypePage() {
             disabled={isSubmitting}
             className={`
               group relative overflow-hidden rounded-2xl transition-all duration-300
-              ${selectedType === "user" 
-                ? "scale-105 shadow-2xl" 
-                : "hover:scale-102 shadow-xl hover:shadow-2xl"
+              ${
+                selectedType === "user"
+                  ? "scale-105 shadow-2xl"
+                  : "hover:scale-102 shadow-xl hover:shadow-2xl"
               }
               disabled:opacity-50 disabled:cursor-not-allowed
             `}
           >
-            <div className={`
+            <div
+              className={`
               relative bg-gradient-to-br p-8 h-full min-h-[280px]
               flex flex-col justify-between
-              ${selectedType === "user"
-                ? "from-blue-500 to-cyan-400"
-                : "from-blue-600 to-cyan-500"
+              ${
+                selectedType === "user"
+                  ? "from-blue-500 to-cyan-400"
+                  : "from-blue-600 to-cyan-500"
               }
-            `}>
+            `}
+            >
               {/* Background Pattern */}
               <div className="absolute inset-0 opacity-10">
-                <div className="absolute inset-0" style={{
-                  backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
-                  backgroundSize: '32px 32px'
-                }}></div>
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
+                    backgroundSize: "32px 32px",
+                  }}
+                ></div>
               </div>
 
               {/* Content */}
               <div className="relative z-10">
-                <div className={`
+                <div
+                  className={`
                   inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6
                   transition-all duration-300
-                  ${selectedType === "user" 
-                    ? "bg-white shadow-lg scale-110" 
-                    : "bg-white/20 backdrop-blur-sm group-hover:bg-white/30"
+                  ${
+                    selectedType === "user"
+                      ? "bg-white shadow-lg scale-110"
+                      : "bg-white/20 backdrop-blur-sm group-hover:bg-white/30"
                   }
-                `}>
-                  <Home className={`w-8 h-8 ${selectedType === "user" ? "text-blue-600" : "text-white"}`} />
+                `}
+                >
+                  <Home
+                    className={`w-8 h-8 ${
+                      selectedType === "user" ? "text-blue-600" : "text-white"
+                    }`}
+                  />
                 </div>
 
                 <h3 className="text-2xl font-bold text-white mb-3">
                   Find a Room
                 </h3>
                 <p className="text-white/90 text-base leading-relaxed">
-                  Browse and discover the perfect rental space that fits your needs and budget.
+                  Browse and discover the perfect rental space that fits your
+                  needs and budget.
                 </p>
               </div>
 
@@ -216,11 +237,17 @@ export default function UserTypePage() {
               )}
 
               {/* Hover Arrow */}
-              <div className={`
+              <div
+                className={`
                 relative z-10 mt-6 flex items-center gap-2 text-white font-semibold
                 transition-all duration-300
-                ${selectedType === "user" ? "translate-x-2" : "group-hover:translate-x-2"}
-              `}>
+                ${
+                  selectedType === "user"
+                    ? "translate-x-2"
+                    : "group-hover:translate-x-2"
+                }
+              `}
+              >
                 <span>I'm looking for a room</span>
                 <ArrowRight className="w-5 h-5" />
               </div>
@@ -233,47 +260,62 @@ export default function UserTypePage() {
             disabled={isSubmitting}
             className={`
               group relative overflow-hidden rounded-2xl transition-all duration-300
-              ${selectedType === "host" 
-                ? "scale-105 shadow-2xl" 
-                : "hover:scale-102 shadow-xl hover:shadow-2xl"
+              ${
+                selectedType === "host"
+                  ? "scale-105 shadow-2xl"
+                  : "hover:scale-102 shadow-xl hover:shadow-2xl"
               }
               disabled:opacity-50 disabled:cursor-not-allowed
             `}
           >
-            <div className={`
+            <div
+              className={`
               relative bg-gradient-to-br p-8 h-full min-h-[280px]
               flex flex-col justify-between
-              ${selectedType === "host"
-                ? "from-rose-500 to-orange-400"
-                : "from-rose-600 to-orange-500"
+              ${
+                selectedType === "host"
+                  ? "from-rose-500 to-orange-400"
+                  : "from-rose-600 to-orange-500"
               }
-            `}>
+            `}
+            >
               {/* Background Pattern */}
               <div className="absolute inset-0 opacity-10">
-                <div className="absolute inset-0" style={{
-                  backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
-                  backgroundSize: '32px 32px'
-                }}></div>
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
+                    backgroundSize: "32px 32px",
+                  }}
+                ></div>
               </div>
 
               {/* Content */}
               <div className="relative z-10">
-                <div className={`
+                <div
+                  className={`
                   inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6
                   transition-all duration-300
-                  ${selectedType === "host" 
-                    ? "bg-white shadow-lg scale-110" 
-                    : "bg-white/20 backdrop-blur-sm group-hover:bg-white/30"
+                  ${
+                    selectedType === "host"
+                      ? "bg-white shadow-lg scale-110"
+                      : "bg-white/20 backdrop-blur-sm group-hover:bg-white/30"
                   }
-                `}>
-                  <Key className={`w-8 h-8 ${selectedType === "host" ? "text-rose-600" : "text-white"}`} />
+                `}
+                >
+                  <Key
+                    className={`w-8 h-8 ${
+                      selectedType === "host" ? "text-rose-600" : "text-white"
+                    }`}
+                  />
                 </div>
 
                 <h3 className="text-2xl font-bold text-white mb-3">
                   List Your Property
                 </h3>
                 <p className="text-white/90 text-base leading-relaxed">
-                  Become a host and start earning by renting out your available spaces.
+                  Become a host and start earning by renting out your available
+                  spaces.
                 </p>
               </div>
 
@@ -285,11 +327,17 @@ export default function UserTypePage() {
               )}
 
               {/* Hover Arrow */}
-              <div className={`
+              <div
+                className={`
                 relative z-10 mt-6 flex items-center gap-2 text-white font-semibold
                 transition-all duration-300
-                ${selectedType === "host" ? "translate-x-2" : "group-hover:translate-x-2"}
-              `}>
+                ${
+                  selectedType === "host"
+                    ? "translate-x-2"
+                    : "group-hover:translate-x-2"
+                }
+              `}
+              >
                 <span>I want to host rooms</span>
                 <ArrowRight className="w-5 h-5" />
               </div>
@@ -305,9 +353,10 @@ export default function UserTypePage() {
             className={`
               px-12 py-4 rounded-full text-lg font-semibold
               transition-all duration-300 transform
-              ${selectedType
-                ? "bg-white text-purple-600 hover:bg-opacity-90 hover:scale-105 shadow-xl hover:shadow-2xl"
-                : "bg-white/30 text-white/50 cursor-not-allowed"
+              ${
+                selectedType
+                  ? "bg-white text-purple-600 hover:bg-opacity-90 hover:scale-105 shadow-xl hover:shadow-2xl"
+                  : "bg-white/30 text-white/50 cursor-not-allowed"
               }
               disabled:hover:scale-100 disabled:hover:shadow-xl
             `}
@@ -315,8 +364,20 @@ export default function UserTypePage() {
             {isSubmitting ? (
               <span className="flex items-center gap-2">
                 <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
                 </svg>
                 Processing...
               </span>

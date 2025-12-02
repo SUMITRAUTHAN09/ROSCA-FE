@@ -175,7 +175,6 @@ export default function HelpCenter() {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-16 px-6">
       <BackArrow />
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-12">
           <Typography variant="h2" className="block">
             How Can We Help You? 🤝

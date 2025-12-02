@@ -259,21 +259,8 @@ export default function Footer() {
               </div>
             </div>
           </div>
-
-          {/* Divider with Gradient */}
-          <div className="relative my-12">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-700"></div>
-            </div>
-            <div className="relative flex justify-center">
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-1 rounded-full text-xs font-semibold text-white shadow-lg">
-                Building Better Communities
-              </span>
-            </div>
-          </div>
-
           {/* Bottom Section */}
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-9xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <Typography
                 variant="paraHighLight"
@@ -310,20 +297,6 @@ export default function Footer() {
                 </Link>
               </div>
             </div>
-            {/* 
-            //Extra Info Badge 
-            <div className="mt-8 text-center">
-              <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-6 py-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                <span className="text-gray-300 text-xs font-medium">
-                  1000+ Happy Tenants | 500+ Verified Properties
-                </span>
-              </div>
-            </div>
-      */}
           </div>
         </div>
       </section>

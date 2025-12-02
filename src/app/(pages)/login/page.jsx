@@ -1,7 +1,6 @@
 "use client";
 
 import IMAGES from "@/app/assets/images.constant";
-import BackArrow from "@/components/custom/back_arrow";
 import FormInput from "@/components/custom/input-field";
 import { Typography } from "@/components/custom/typography";
 import { Button } from "@/components/ui/button";
@@ -73,14 +72,10 @@ function LoginContent() {
 
         // IMPORTANT: Check userType and redirect accordingly
         if (response.user.userType === "user") {
-          // Regular user - redirect to uipage2 with Header2
-          console.log("✅ User type: USER - Redirecting to /uipage2");
           setTimeout(() => {
-            window.location.href = "/uipage2";
+            window.location.href = "/host-uipage";
           }, 800);
         } else if (response.user.userType === "host") {
-          // Host - redirect to uipage with original Header
-          console.log("✅ User type: HOST - Redirecting to UIPAGE");
           setTimeout(() => {
             window.location.href = NAVIGATION_ROUTES.UIPAGE;
           }, 800);
@@ -116,8 +111,6 @@ function LoginContent() {
 
   return (
     <div className="flex min-h-screen w-full bg-gradient-to-br from-orange-400 via-pink-500 to-purple-700">
-      <BackArrow />
-
       {/* Left Section - Image & Branding */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 to-purple-900/90 z-10"></div>
@@ -173,7 +166,6 @@ function LoginContent() {
         <div className="w-full max-w-md">
           {/* Card Container */}
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 lg:p-10 border border-white/20">
-            {/* Header */}
             <div className="text-center mb-8">
               <div className="inline-block lg:hidden mb-4">
                 <Image

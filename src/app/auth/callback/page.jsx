@@ -1,9 +1,9 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, Suspense } from "react";
-import { toast } from "sonner";
 import { NAVIGATION_ROUTES } from "@/app/constant";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
+import { toast } from "sonner";
 
 function CallbackContent() {
   const searchParams = useSearchParams();
@@ -63,19 +63,19 @@ function CallbackContent() {
 
         // Success toast
         toast.success(
-          `Welcome, ${userData.user?.firstName || userData.firstName || "User"}!`
+          `Welcome, ${
+            userData.user?.firstName || userData.firstName || "User"
+          }!`
         );
 
         // Redirect based on userType
         const userType = userData.user?.userType || userData.userType;
 
         if (userType === "user") {
-          console.log("✅ User type: USER - Redirecting to /uipage2");
           setTimeout(() => {
-            router.push("/uipage2");
+            router.push("/host-uipage");
           }, 1000);
         } else if (userType === "host") {
-          console.log("✅ User type: HOST - Redirecting to /uipage");
           setTimeout(() => {
             router.push(NAVIGATION_ROUTES.UIPAGE);
           }, 1000);

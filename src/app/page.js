@@ -1,19 +1,86 @@
+"use client";
+
 import About from "@/components/custom/about";
 import Footer from "@/components/custom/footer";
-import Header from "@/components/custom/header";
 import { Typography } from "@/components/custom/typography";
+import { useEffect, useState } from "react";
 import IMAGES from "./assets/images.constant";
-import { EXPLORE } from "./constant.jsx";
+import { EXPLORE, NAVIGATION_ROUTES } from "./constant.jsx";
 
-import NavBar from "@/components/custom/navbar";
+import NavBar from "@/components/custom/home_navbar";
+import HostHeader from "@/components/custom/host_header";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Main from "../components/custom/Main";
 
 export default function Home() {
+  const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if user is logged in using authToken
+    const authToken = localStorage.getItem("authToken");
+    const userLoggedIn = localStorage.getItem("userLoggedIn");
+    const loggedIn = !!authToken && userLoggedIn === "true";
+
+    setIsLoggedIn(loggedIn);
+    setIsLoading(false);
+
+    // ✅ FIXED: Check userType FIRST, then redirect
+    if (loggedIn) {
+      const userStr = localStorage.getItem("user"); // Get user data
+
+      if (userStr && userStr !== "undefined") {
+        try {
+          const user = JSON.parse(userStr); // Parse user object
+
+          // Check userType and redirect accordingly
+          if (user.userType === "host") {
+            console.log("✅ Redirecting HOST to /host-uipage");
+            router.push("/host-uipage"); // Hosts go here
+          } else if (user.userType === "user") {
+            console.log("✅ Redirecting USER to /user-uipage");
+            router.push("/user-uipage"); // Users go here
+          } else {
+            console.log("⚠️ No userType found, redirecting to /usertype");
+            router.push("/usertype"); // No type? Select one
+          }
+        } catch (e) {
+          console.error("❌ Error parsing user data:", e);
+          router.push("/usertype"); // Error? Select type again
+        }
+      } else {
+        console.log("⚠️ No user data found, redirecting to /usertype");
+        router.push("/usertype"); // No user data? Select type
+      }
+    }
+  }, [router]);
+
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white mx-auto mb-4"></div>
+          <Typography variant="h3" className="text-white">
+            Loading...
+          </Typography>
+        </div>
+      </div>
+    );
+  }
+
+  // If logged in, show nothing (user will be redirected)
+  if (isLoggedIn) {
+    return null; // ✅ FIXED: Return null instead of trying to redirect again
+  }
+
+  // Show landing page for non-logged-in users
   return (
     <>
-      <Header />
+      <HostHeader />
       <main className="flex flex-col items-center justify-center bg-gradient-to-b from-gray-50 to-white">
         {/* Hero Section */}
         <section
@@ -74,8 +141,8 @@ export default function Home() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 animate-slide-up animation-delay-400">
-              <Link href="rooms">
-                <button className="group relative px-8 py-4 bg-white text-purple-600 rounded-xl font-bold text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 overflow-hidden">
+              <Link href={NAVIGATION_ROUTES.LOGIN}>
+                <button className="group relative px-8 py-4 bg-white text-purple-600 rounded-xl font-bold text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 overflow-hidden cursor-pointer">
                   <span className="relative z-10 flex items-center gap-2">
                     {EXPLORE}
                     <svg
@@ -98,7 +165,7 @@ export default function Home() {
               </Link>
 
               <Link href="#rooms">
-                <button className="px-8 py-4 bg-white/10 backdrop-blur-md text-white border-2 border-white/30 rounded-xl font-bold text-lg hover:bg-white/20 hover:border-white/50 transform hover:scale-105 transition-all duration-300 shadow-lg">
+                <button className="px-8 py-4 bg-white/10 backdrop-blur-md text-white border-2 border-white/30 rounded-xl font-bold text-lg hover:bg-white/20 hover:border-white/50 transform hover:scale-105 transition-all duration-300 shadow-lg cursor-pointer">
                   View Featured Rooms
                 </button>
               </Link>
@@ -267,51 +334,6 @@ export default function Home() {
               Handpicked properties verified by our team
             </Typography>
           </div>
-          {/* You can uncomment and use your original featuredProperties logic here */}
-          {/* {featuredProperties.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {featuredProperties.map((item) => (
-            <div
-              key={item.id}
-              className="group relative bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
-            >
-              <div className="relative overflow-hidden">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  width={600}
-                  height={400}
-                  className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute top-4 right-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg">
-                  Featured
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
-              <div className="p-6">
-                <Typography variant="h3" className="mb-2">{item.location}</Typography>
-                <Typography variant="paraPrimary" className="text-gray-600 mb-4">
-                  ₹{item.price}/month • {item.amenities.join(" • ")}
-                </Typography>
-                <Link href={NAVIGATION_ROUTES.LOGIN}>
-                  <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-300 shadow-md">
-                    View Details
-                  </button>
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12 bg-gray-50 rounded-2xl">
-          <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-          </svg>
-          <Typography variant="paraSecondary" className="text-gray-500">
-            No featured properties available at the moment.
-          </Typography>
-        </div>
-      )} */}
         </section>
 
         <Main />

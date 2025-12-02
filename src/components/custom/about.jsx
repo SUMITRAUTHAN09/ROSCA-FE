@@ -9,7 +9,6 @@ export default function About() {
       className="relative bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-20 overflow-hidden"
     >
       <div className="relative z-10 max-w-9xl mx-auto px-6">
-        {/* Section Header */}
         <div className="text-center mb-16">
           <Typography
             variant="h1"

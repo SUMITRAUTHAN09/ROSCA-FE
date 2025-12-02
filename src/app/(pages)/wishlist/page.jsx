@@ -1,16 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Header2 from "@/components/custom/header2";
+import { NAVIGATION_ROUTES } from "@/app/constant";
 import Footer from "@/components/custom/footer";
 import { Typography } from "@/components/custom/typography";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, MapPin, Bed, Bath, Square, Trash2 } from "lucide-react";
+import { default as UserHeader } from "@/components/custom/user_header";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  clearWishlist,
+  getWishlist,
+  removeFromWishlist,
+} from "@/lib/API/wishListApi";
+import { Bath, Bed, Heart, MapPin, Square, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getWishlist, removeFromWishlist, clearWishlist } from "@/lib/API/wishListApi";
 
 export default function WishlistPage() {
   const [wishlistRooms, setWishlistRooms] = useState([]);
@@ -99,7 +104,7 @@ export default function WishlistPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header2 />
+        <UserHeader />
         <main className="max-w-7xl mx-auto px-6 py-24">
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mx-auto mb-4"></div>
@@ -115,17 +120,17 @@ export default function WishlistPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header2 />
+      <UserHeader />
 
       <main className="max-w-7xl mx-auto px-6 py-24">
-        {/* Header Section */}
         <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <Typography variant="h1" className="text-3xl font-bold mb-2">
               My Wishlist ❤️
             </Typography>
             <Typography variant="body" className="text-gray-600">
-              {wishlistRooms.length} {wishlistRooms.length === 1 ? "room" : "rooms"} saved for later
+              {wishlistRooms.length}{" "}
+              {wishlistRooms.length === 1 ? "room" : "rooms"} saved for later
             </Typography>
           </div>
 
@@ -148,10 +153,14 @@ export default function WishlistPage() {
             <Typography variant="h2" className="text-2xl font-semibold mb-3">
               Your wishlist is empty
             </Typography>
-            <Typography variant="body" className="text-gray-600 mb-6 max-w-md mx-auto">
-              Start exploring amazing rooms and save your favorites here! Click the heart icon on any room to add it to your wishlist.
+            <Typography
+              variant="body"
+              className="text-gray-600 mb-6 max-w-md mx-auto"
+            >
+              Start exploring amazing rooms and save your favorites here! Click
+              the heart icon on any room to add it to your wishlist.
             </Typography>
-            <Link href="/uipage2">
+            <Link href={NAVIGATION_ROUTES.HOST_UIPAGE}>
               <Button className="bg-blue-600 hover:bg-blue-700">
                 Explore Rooms
               </Button>
@@ -162,7 +171,10 @@ export default function WishlistPage() {
             {/* Wishlist Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {wishlistRooms.map((room) => (
-                <Card key={room._id} className="overflow-hidden hover:shadow-xl transition-all duration-300 group">
+                <Card
+                  key={room._id}
+                  className="overflow-hidden hover:shadow-xl transition-all duration-300 group"
+                >
                   <CardHeader className="p-0 relative">
                     <img
                       src={room.images?.[0] || "/placeholder-room.jpg"}
@@ -189,11 +201,16 @@ export default function WishlistPage() {
                   </CardHeader>
 
                   <CardContent className="p-5">
-                    <CardTitle className="text-xl mb-3 line-clamp-1">{room.roomTitle || "Untitled Room"}</CardTitle>
+                    <CardTitle className="text-xl mb-3 line-clamp-1">
+                      {room.roomTitle || "Untitled Room"}
+                    </CardTitle>
 
                     <div className="flex items-center text-gray-600 mb-3">
                       <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
-                      <Typography variant="body" className="text-sm line-clamp-1">
+                      <Typography
+                        variant="body"
+                        className="text-sm line-clamp-1"
+                      >
                         {room.location || "Location not specified"}
                       </Typography>
                     </div>
@@ -238,7 +255,9 @@ export default function WishlistPage() {
                           </span>
                         ))}
                         {room.amenities.length > 3 && (
-                          <span className="text-xs text-gray-500 px-2 py-1 font-medium">+{room.amenities.length - 3} more</span>
+                          <span className="text-xs text-gray-500 px-2 py-1 font-medium">
+                            +{room.amenities.length - 3} more
+                          </span>
                         )}
                       </div>
                     )}
@@ -246,13 +265,24 @@ export default function WishlistPage() {
                     {/* Price and Action */}
                     <div className="flex justify-between items-center pt-3 border-t">
                       <div>
-                        <Typography variant="body" className="text-2xl font-bold text-blue-600">
+                        <Typography
+                          variant="body"
+                          className="text-2xl font-bold text-blue-600"
+                        >
                           ₹{room.price?.toLocaleString() || "N/A"}
                         </Typography>
-                        <Typography variant="body" className="text-xs text-gray-500">per month</Typography>
+                        <Typography
+                          variant="body"
+                          className="text-xs text-gray-500"
+                        >
+                          per month
+                        </Typography>
                       </div>
                       <Link href={`/item-details/${room._id}`}>
-                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                        <Button
+                          size="sm"
+                          className="bg-blue-600 hover:bg-blue-700"
+                        >
                           View Details
                         </Button>
                       </Link>
@@ -269,7 +299,9 @@ export default function WishlistPage() {
                   💡 Pro Tip
                 </Typography>
                 <Typography variant="body" className="text-gray-700">
-                  Keep your wishlist updated! Rooms can be rented quickly, so check back often and reach out to landlords for the best deals.
+                  Keep your wishlist updated! Rooms can be rented quickly, so
+                  check back often and reach out to landlords for the best
+                  deals.
                 </Typography>
               </div>
 
@@ -278,7 +310,8 @@ export default function WishlistPage() {
                   🔔 Stay Notified
                 </Typography>
                 <Typography variant="body" className="text-gray-700">
-                  Save rooms you love and get instant updates when prices drop or availability changes.
+                  Save rooms you love and get instant updates when prices drop
+                  or availability changes.
                 </Typography>
               </div>
             </div>
@@ -286,27 +319,58 @@ export default function WishlistPage() {
             {/* Stats */}
             <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-white p-4 rounded-lg shadow-sm text-center">
-                <Typography variant="h3" className="text-2xl font-bold text-blue-600">{wishlistRooms.length}</Typography>
-                <Typography variant="body" className="text-sm text-gray-600">Saved Rooms</Typography>
+                <Typography
+                  variant="h3"
+                  className="text-2xl font-bold text-blue-600"
+                >
+                  {wishlistRooms.length}
+                </Typography>
+                <Typography variant="body" className="text-sm text-gray-600">
+                  Saved Rooms
+                </Typography>
               </div>
 
               <div className="bg-white p-4 rounded-lg shadow-sm text-center">
-                <Typography variant="h3" className="text-2xl font-bold text-green-600">{wishlistRooms.filter(r => r.price).length}</Typography>
-                <Typography variant="body" className="text-sm text-gray-600">With Pricing</Typography>
+                <Typography
+                  variant="h3"
+                  className="text-2xl font-bold text-green-600"
+                >
+                  {wishlistRooms.filter((r) => r.price).length}
+                </Typography>
+                <Typography variant="body" className="text-sm text-gray-600">
+                  With Pricing
+                </Typography>
               </div>
 
               <div className="bg-white p-4 rounded-lg shadow-sm text-center">
-                <Typography variant="h3" className="text-2xl font-bold text-purple-600">{new Set(wishlistRooms.map(r => r.location)).size}</Typography>
-                <Typography variant="body" className="text-sm text-gray-600">Locations</Typography>
+                <Typography
+                  variant="h3"
+                  className="text-2xl font-bold text-purple-600"
+                >
+                  {new Set(wishlistRooms.map((r) => r.location)).size}
+                </Typography>
+                <Typography variant="body" className="text-sm text-gray-600">
+                  Locations
+                </Typography>
               </div>
 
               <div className="bg-white p-4 rounded-lg shadow-sm text-center">
-                <Typography variant="h3" className="text-2xl font-bold text-orange-600">
-                  {wishlistRooms.length > 0 && wishlistRooms.some(r => r.price)
-                    ? `₹${Math.min(...wishlistRooms.filter(r => r.price).map(r => r.price)).toLocaleString()}`
+                <Typography
+                  variant="h3"
+                  className="text-2xl font-bold text-orange-600"
+                >
+                  {wishlistRooms.length > 0 &&
+                  wishlistRooms.some((r) => r.price)
+                    ? `₹${Math.min(
+                        ...wishlistRooms
+                          .filter((r) => r.price)
+                          .map((r) => r.price)
+                      ).toLocaleString()}`
                     : "N/A"}
                 </Typography>
-                <Typography variant="body" className="text-sm text-gray-600">Lowest Price</Typography>
+                <Typography variant="body" className="text-sm text-gray-600">
+                  Lowest Price
+                </Typography>
               </div>
             </div>
           </>

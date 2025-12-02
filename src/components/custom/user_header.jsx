@@ -9,7 +9,7 @@ import { NAVIGATION_ROUTES, RENTAL } from "../../app/constant.jsx";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet.jsx";
 import { Typography } from "./typography";
 
-export default function Header2() {
+export default function UserHeader() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {

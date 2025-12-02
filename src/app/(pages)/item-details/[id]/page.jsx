@@ -2,10 +2,18 @@
 
 import BackArrow from "@/components/custom/back_arrow";
 import Footer from "@/components/custom/footer";
-import Header from "@/components/custom/header";
+import { default as HostHeader } from "@/components/custom/host_header";
 import { Typography } from "@/components/custom/typography";
 import { getRoomById } from "@/lib/API/roomApi";
-import { Bath, Bed, MapPin, Phone, MessageCircle, CheckCircle, Home, User } from "lucide-react";
+import {
+  Bath,
+  Bed,
+  CheckCircle,
+  Home,
+  MapPin,
+  MessageCircle,
+  Phone,
+} from "lucide-react";
 import Image from "next/image";
 import { use, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -46,17 +54,21 @@ export default function RoomDetails({ params }) {
     if (!isFullScreen) return;
 
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         setIsFullScreen(false);
-      } else if (e.key === 'ArrowLeft' && room?.images?.length > 1) {
-        setCurrentImageIndex((prev) => (prev === 0 ? room.images.length - 1 : prev - 1));
-      } else if (e.key === 'ArrowRight' && room?.images?.length > 1) {
-        setCurrentImageIndex((prev) => (prev === room.images.length - 1 ? 0 : prev + 1));
+      } else if (e.key === "ArrowLeft" && room?.images?.length > 1) {
+        setCurrentImageIndex((prev) =>
+          prev === 0 ? room.images.length - 1 : prev - 1
+        );
+      } else if (e.key === "ArrowRight" && room?.images?.length > 1) {
+        setCurrentImageIndex((prev) =>
+          prev === room.images.length - 1 ? 0 : prev + 1
+        );
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isFullScreen, room?.images?.length]);
 
   const fetchRoomDetails = async () => {
@@ -78,12 +90,15 @@ export default function RoomDetails({ params }) {
   if (loading) {
     return (
       <>
-        <Header />
+        <HostHeader />
         <div className="flex items-center justify-center min-h-screen pt-32 bg-gradient-to-br from-blue-50 to-indigo-50">
           <BackArrow />
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent mx-auto"></div>
-            <Typography variant="paraPrimary" className="mt-6 text-gray-700 font-medium">
+            <Typography
+              variant="paraPrimary"
+              className="mt-6 text-gray-700 font-medium"
+            >
               Loading room details...
             </Typography>
           </div>
@@ -96,13 +111,18 @@ export default function RoomDetails({ params }) {
   if (error || !room) {
     return (
       <>
-        <Header />
+        <HostHeader />
         <div className="mt-20 pt-32 text-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
           <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg p-8">
             <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Home className="h-10 w-10 text-red-600" />
             </div>
-            <Typography variant="h2" className="text-2xl font-bold text-gray-800">Room not found</Typography>
+            <Typography
+              variant="h2"
+              className="text-2xl font-bold text-gray-800"
+            >
+              Room not found
+            </Typography>
             <Typography variant="paraPrimary" className="mt-3 text-gray-600">
               {error || "The room you're looking for doesn't exist"}
             </Typography>
@@ -115,7 +135,7 @@ export default function RoomDetails({ params }) {
 
   return (
     <>
-      <Header />
+      <HostHeader />
 
       <main className="pt-24 pb-16 bg-gradient-to-br from-blue-50 via-white to-indigo-50 min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -131,7 +151,7 @@ export default function RoomDetails({ params }) {
               <div className="relative overflow-hidden rounded-3xl shadow-2xl h-[450px] group">
                 {room.images && room.images.length > 0 ? (
                   <>
-                    <div 
+                    <div
                       onClick={() => setIsFullScreen(true)}
                       className="cursor-zoom-in"
                     >
@@ -145,18 +165,28 @@ export default function RoomDetails({ params }) {
                     </div>
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
-                    
+
                     {/* Expand Icon */}
                     <button
                       onClick={() => setIsFullScreen(true)}
                       className="absolute bottom-6 right-6 bg-white/95 backdrop-blur-sm hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
                       title="View fullscreen"
                     >
-                      <svg className="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                      <svg
+                        className="w-5 h-5 text-gray-800"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                        />
                       </svg>
                     </button>
-                    
+
                     {/* Image Counter Badge */}
                     <div className="absolute top-6 right-6 bg-white/95 backdrop-blur-sm text-gray-800 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
                       {currentImageIndex + 1} / {room.images.length}
@@ -166,19 +196,47 @@ export default function RoomDetails({ params }) {
                     {room.images.length > 1 && (
                       <>
                         <button
-                          onClick={() => setCurrentImageIndex((prev) => (prev === 0 ? room.images.length - 1 : prev - 1))}
+                          onClick={() =>
+                            setCurrentImageIndex((prev) =>
+                              prev === 0 ? room.images.length - 1 : prev - 1
+                            )
+                          }
                           className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
                         >
-                          <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                          <svg
+                            className="w-6 h-6 text-gray-800"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 19l-7-7 7-7"
+                            />
                           </svg>
                         </button>
                         <button
-                          onClick={() => setCurrentImageIndex((prev) => (prev === room.images.length - 1 ? 0 : prev + 1))}
+                          onClick={() =>
+                            setCurrentImageIndex((prev) =>
+                              prev === room.images.length - 1 ? 0 : prev + 1
+                            )
+                          }
                           className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
                         >
-                          <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          <svg
+                            className="w-6 h-6 text-gray-800"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
                           </svg>
                         </button>
                       </>
@@ -188,7 +246,9 @@ export default function RoomDetails({ params }) {
                   <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center rounded-3xl">
                     <div className="text-center">
                       <Home className="h-16 w-16 text-gray-400 mx-auto mb-2" />
-                      <span className="text-gray-500 font-medium">No Image Available</span>
+                      <span className="text-gray-500 font-medium">
+                        No Image Available
+                      </span>
                     </div>
                   </div>
                 )}
@@ -226,18 +286,28 @@ export default function RoomDetails({ params }) {
 
               {/* Description Card */}
               <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-                <Typography variant="h2" className="text-xl font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <Typography
+                  variant="h2"
+                  className="text-xl font-bold text-gray-800 mb-3 flex items-center gap-2"
+                >
                   <Home className="h-5 w-5 text-blue-600" />
                   About This Room
                 </Typography>
-                <Typography variant="paraPrimary" className="text-gray-700 leading-relaxed">
-                  {room.description || "A clean, comfortable and affordable stay with essential amenities."}
+                <Typography
+                  variant="paraPrimary"
+                  className="text-gray-700 leading-relaxed"
+                >
+                  {room.description ||
+                    "A clean, comfortable and affordable stay with essential amenities."}
                 </Typography>
               </div>
 
               {/* Facilities Card */}
               <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-                <Typography variant="h2" className="text-xl font-bold text-gray-800 mb-4">
+                <Typography
+                  variant="h2"
+                  className="text-xl font-bold text-gray-800 mb-4"
+                >
                   Facilities & Amenities
                 </Typography>
 
@@ -245,38 +315,67 @@ export default function RoomDetails({ params }) {
                   <div className="flex items-center gap-3 bg-blue-50 p-4 rounded-xl border border-blue-100">
                     <Bed className="h-6 w-6 text-blue-600" />
                     <div>
-                      <p className="font-semibold text-gray-800">{room.beds || 1}</p>
-                      <p className="text-sm text-gray-600">{room.beds === 1 ? "Bed" : "Beds"}</p>
+                      <p className="font-semibold text-gray-800">
+                        {room.beds || 1}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {room.beds === 1 ? "Bed" : "Beds"}
+                      </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3 bg-purple-50 p-4 rounded-xl border border-purple-100">
                     <Bath className="h-6 w-6 text-purple-600" />
                     <div>
-                      <p className="font-semibold text-gray-800">{room.bathrooms || 1}</p>
-                      <p className="text-sm text-gray-600">{room.bathrooms === 1 ? "Bath" : "Baths"}</p>
+                      <p className="font-semibold text-gray-800">
+                        {room.bathrooms || 1}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {room.bathrooms === 1 ? "Bath" : "Baths"}
+                      </p>
                     </div>
                   </div>
 
-                  {room.amenities && room.amenities.length > 0 && room.amenities.map((item, i) => (
-                    <div key={i} className="flex items-center gap-3 bg-green-50 p-4 rounded-xl border border-green-100">
-                      <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                      <p className="text-sm font-medium text-gray-800">{item}</p>
-                    </div>
-                  ))}
+                  {room.amenities &&
+                    room.amenities.length > 0 &&
+                    room.amenities.map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-3 bg-green-50 p-4 rounded-xl border border-green-100"
+                      >
+                        <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                        <p className="text-sm font-medium text-gray-800">
+                          {item}
+                        </p>
+                      </div>
+                    ))}
                 </div>
               </div>
 
               {/* Owner Rules */}
               {room.ownerRequirements && (
                 <div className="bg-amber-50 border-l-4 border-amber-500 rounded-xl p-6 shadow-md">
-                  <Typography variant="h4" className="font-bold text-amber-800 mb-2 flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  <Typography
+                    variant="h4"
+                    className="font-bold text-amber-800 mb-2 flex items-center gap-2"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                     House Rules & Requirements
                   </Typography>
-                  <Typography variant="paraPrimary" className="text-amber-900 leading-relaxed">
+                  <Typography
+                    variant="paraPrimary"
+                    className="text-amber-900 leading-relaxed"
+                  >
                     {room.ownerRequirements}
                   </Typography>
                 </div>
@@ -288,7 +387,10 @@ export default function RoomDetails({ params }) {
               <div className="sticky top-24 space-y-6">
                 {/* Main Details Card */}
                 <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
-                  <Typography variant="h1" className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+                  <Typography
+                    variant="h1"
+                    className="text-2xl md:text-3xl font-bold text-gray-900 mb-3"
+                  >
                     {room.roomTitle}
                   </Typography>
 
@@ -303,7 +405,9 @@ export default function RoomDetails({ params }) {
 
                   {/* Price Badge */}
                   <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-white mb-6">
-                    <p className="text-sm font-medium opacity-90 mb-1">Monthly Rent</p>
+                    <p className="text-sm font-medium opacity-90 mb-1">
+                      Monthly Rent
+                    </p>
                     <div className="flex items-baseline gap-2">
                       <Typography variant="h1" className="text-4xl font-bold">
                         ₹{room.price}
@@ -319,8 +423,12 @@ export default function RoomDetails({ params }) {
                         {room.ownerName.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600 font-medium">Hosted by</p>
-                        <p className="text-lg font-bold text-gray-800">{room.ownerName}</p>
+                        <p className="text-sm text-gray-600 font-medium">
+                          Hosted by
+                        </p>
+                        <p className="text-lg font-bold text-gray-800">
+                          {room.ownerName}
+                        </p>
                       </div>
                     </div>
                   )}
@@ -351,7 +459,10 @@ export default function RoomDetails({ params }) {
 
                 {/* Quick Info Card */}
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
-                  <Typography variant="h3" className="text-lg font-bold text-gray-800 mb-3">
+                  <Typography
+                    variant="h3"
+                    className="text-lg font-bold text-gray-800 mb-3"
+                  >
                     Why Choose This Room?
                   </Typography>
                   <ul className="space-y-2 text-sm text-gray-700">
@@ -379,7 +490,7 @@ export default function RoomDetails({ params }) {
 
       {/* Fullscreen Image Modal */}
       {isFullScreen && room.images && room.images.length > 0 && (
-        <div 
+        <div
           className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
           onClick={() => setIsFullScreen(false)}
         >
@@ -389,8 +500,18 @@ export default function RoomDetails({ params }) {
             className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-3 rounded-full transition-all hover:scale-110 z-20"
             title="Close (ESC)"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
 
@@ -400,7 +521,7 @@ export default function RoomDetails({ params }) {
           </div>
 
           {/* Main Fullscreen Image */}
-          <div 
+          <div
             className="relative w-full h-full flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
@@ -419,25 +540,49 @@ export default function RoomDetails({ params }) {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setCurrentImageIndex((prev) => (prev === 0 ? room.images.length - 1 : prev - 1));
+                  setCurrentImageIndex((prev) =>
+                    prev === 0 ? room.images.length - 1 : prev - 1
+                  );
                 }}
                 className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-4 rounded-full transition-all hover:scale-110 z-20"
                 title="Previous (←)"
               >
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                <svg
+                  className="w-8 h-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
                 </svg>
               </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setCurrentImageIndex((prev) => (prev === room.images.length - 1 ? 0 : prev + 1));
+                  setCurrentImageIndex((prev) =>
+                    prev === room.images.length - 1 ? 0 : prev + 1
+                  );
                 }}
                 className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-4 rounded-full transition-all hover:scale-110 z-20"
                 title="Next (→)"
               >
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                <svg
+                  className="w-8 h-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
                 </svg>
               </button>
             </>

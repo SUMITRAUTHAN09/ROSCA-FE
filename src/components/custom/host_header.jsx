@@ -10,7 +10,7 @@ import { NAVIGATION_ROUTES, RENTAL } from "../../app/constant.jsx";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet.jsx";
 import { Typography } from "./typography";
 
-export default function Header() {
+export default function HostHeader() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {

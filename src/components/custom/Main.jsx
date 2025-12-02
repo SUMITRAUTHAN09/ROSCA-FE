@@ -193,7 +193,6 @@ export default function Main() {
   return (
     <main className="w-full py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 via-white to-indigo-50 min-h-screen">
       <section className="max-w-7xl mx-auto">
-        {/* Header Section */}
         <div className="text-center mb-12">
           <Typography
             variant="h1"
