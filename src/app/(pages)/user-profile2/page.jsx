@@ -1,22 +1,23 @@
 "use client";
 
+import Footer from "@/components/custom/footer";
 import { Typography } from "@/components/custom/typography";
 import { Button } from "@/components/ui/button";
+import { getCurrentUserInfo, uploadProfilePicture } from "@/lib/API/userApi";
 import { useAuthStore } from "@/Store/Profile-data";
-import BackArrow from "@/components/custom/back_arrow";
-import Footer from "@/components/custom/footer";
+import { Moon, Sun } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { NAVIGATION_ROUTES } from "../../constant";
-import { getCurrentUserInfo, uploadProfilePicture } from "@/lib/API/userApi";
-import { Moon, Sun } from "lucide-react";
 
 export default function UserProfilePage() {
   const { user, setUser } = useAuthStore();
 
-  const [profilePicturePreview, setProfilePicturePreview] = useState(user?.profilePicture || null);
+  const [profilePicturePreview, setProfilePicturePreview] = useState(
+    user?.profilePicture || null
+  );
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isLoadingData, setIsLoadingData] = useState(true);
@@ -33,7 +34,10 @@ export default function UserProfilePage() {
     const loadData = async () => {
       try {
         setIsLoadingData(true);
-        const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+        const token =
+          typeof window !== "undefined"
+            ? localStorage.getItem("authToken")
+            : null;
         if (!token) {
           toast.error("Please log in to view your profile");
           setIsLoadingData(false);
@@ -103,7 +107,9 @@ export default function UserProfilePage() {
     setTheme(newTheme);
     localStorage.setItem("userTheme", newTheme);
     document.documentElement.classList.toggle("dark", newTheme === "dark");
-    toast.success(`${newTheme === "dark" ? "🌙 Dark" : "☀️ Light"} mode activated!`);
+    toast.success(
+      `${newTheme === "dark" ? "🌙 Dark" : "☀️ Light"} mode activated!`
+    );
   };
 
   if (isLoadingData) {
@@ -116,8 +122,18 @@ export default function UserProfilePage() {
               <div className="text-2xl">👤</div>
             </div>
           </div>
-          <Typography variant="h2" className="text-gray-800 dark:text-gray-200 font-bold">Loading your profile</Typography>
-          <Typography variant="paraSecondary" className="text-gray-500 dark:text-gray-400 mt-2">Getting your information...</Typography>
+          <Typography
+            variant="h2"
+            className="text-gray-800 dark:text-gray-200 font-bold"
+          >
+            Loading your profile
+          </Typography>
+          <Typography
+            variant="paraSecondary"
+            className="text-gray-500 dark:text-gray-400 mt-2"
+          >
+            Getting your information...
+          </Typography>
         </div>
       </div>
     );
@@ -128,8 +144,16 @@ export default function UserProfilePage() {
       <div className="mt-20 flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-950">
         <div className="text-center bg-white dark:bg-gray-800 p-12 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 max-w-md">
           <div className="text-7xl mb-6 animate-bounce">🔐</div>
-          <Typography variant="h2" className="mb-4 text-gray-800 dark:text-gray-200 font-bold">Welcome Back!</Typography>
-          <Typography variant="paraPrimary" className="mb-8 text-gray-600 dark:text-gray-400 leading-relaxed">
+          <Typography
+            variant="h2"
+            className="mb-4 text-gray-800 dark:text-gray-200 font-bold"
+          >
+            Welcome Back!
+          </Typography>
+          <Typography
+            variant="paraPrimary"
+            className="mb-8 text-gray-600 dark:text-gray-400 leading-relaxed"
+          >
             Sign in to access your profile and personalize your experience
           </Typography>
           <Link href={NAVIGATION_ROUTES.LOGIN}>
@@ -149,7 +173,13 @@ export default function UserProfilePage() {
           id="profile-hero"
           className="relative w-full bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900 text-white overflow-hidden"
         >
-          <BackArrow />
+          <div className="absolute top-4 left-6 z-20 cursor-pointer">
+            <Link href={NAVIGATION_ROUTES.HOST_UIPAGE}>
+              <Typography variant="link" className="text-black text-3xl">
+                ←
+              </Typography>
+            </Link>
+          </div>
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
@@ -166,7 +196,7 @@ export default function UserProfilePage() {
                     width={160}
                     height={160}
                     className="object-cover w-full h-full"
-                    unoptimized={profilePicturePreview.startsWith('data:')}
+                    unoptimized={profilePicturePreview.startsWith("data:")}
                   />
                 ) : (
                   <span className="text-7xl">👤</span>
@@ -196,7 +226,9 @@ export default function UserProfilePage() {
                     Uploading...
                   </span>
                 ) : (
-                  <span className="flex items-center gap-2">✨ Save Picture</span>
+                  <span className="flex items-center gap-2">
+                    ✨ Save Picture
+                  </span>
                 )}
               </Button>
             )}
@@ -239,10 +271,16 @@ export default function UserProfilePage() {
         <section className="w-full max-w-4xl px-6 py-16">
           <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 p-10 transition-colors duration-300">
             <div className="text-center mb-8">
-              <Typography variant="h2" className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-3">
+              <Typography
+                variant="h2"
+                className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-3"
+              >
                 Appearance Settings
               </Typography>
-              <Typography variant="paraSecondary" className="text-gray-600 dark:text-gray-400">
+              <Typography
+                variant="paraSecondary"
+                className="text-gray-600 dark:text-gray-400"
+              >
                 Customize how the app looks for you
               </Typography>
             </div>
@@ -253,10 +291,16 @@ export default function UserProfilePage() {
                   <div className="text-5xl mb-3">
                     {theme === "light" ? "☀️" : "🌙"}
                   </div>
-                  <Typography variant="h3" className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1">
+                  <Typography
+                    variant="h3"
+                    className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1"
+                  >
                     {theme === "light" ? "Light Mode" : "Dark Mode"}
                   </Typography>
-                  <Typography variant="paraSecondary" className="text-sm text-gray-600 dark:text-gray-400">
+                  <Typography
+                    variant="paraSecondary"
+                    className="text-sm text-gray-600 dark:text-gray-400"
+                  >
                     Currently active
                   </Typography>
                 </div>
@@ -280,11 +324,18 @@ export default function UserProfilePage() {
               </Button>
 
               <div className="mt-8 p-6 bg-blue-50 dark:bg-blue-900/30 rounded-xl border border-blue-100 dark:border-blue-800 w-full">
-                <Typography variant="h4" className="text-lg font-semibold text-blue-900 dark:text-blue-200 mb-2 flex items-center gap-2">
+                <Typography
+                  variant="h4"
+                  className="text-lg font-semibold text-blue-900 dark:text-blue-200 mb-2 flex items-center gap-2"
+                >
                   💡 Did you know?
                 </Typography>
-                <Typography variant="paraSecondary" className="text-blue-700 dark:text-blue-300">
-                  Dark mode can help reduce eye strain in low-light environments and may save battery life on devices with OLED screens.
+                <Typography
+                  variant="paraSecondary"
+                  className="text-blue-700 dark:text-blue-300"
+                >
+                  Dark mode can help reduce eye strain in low-light environments
+                  and may save battery life on devices with OLED screens.
                 </Typography>
               </div>
             </div>
@@ -294,26 +345,53 @@ export default function UserProfilePage() {
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 text-center transition-colors duration-300">
               <div className="text-4xl mb-3">🎨</div>
-              <Typography variant="h3" className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mb-1">
+              <Typography
+                variant="h3"
+                className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mb-1"
+              >
                 {theme === "light" ? "Light" : "Dark"}
               </Typography>
-              <Typography variant="paraSecondary" className="text-gray-600 dark:text-gray-400">Current Theme</Typography>
+              <Typography
+                variant="paraSecondary"
+                className="text-gray-600 dark:text-gray-400"
+              >
+                Current Theme
+              </Typography>
             </div>
 
             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 text-center transition-colors duration-300">
               <div className="text-4xl mb-3">✅</div>
-              <Typography variant="h3" className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
+              <Typography
+                variant="h3"
+                className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1"
+              >
                 Active
               </Typography>
-              <Typography variant="paraSecondary" className="text-gray-600 dark:text-gray-400">Account Status</Typography>
+              <Typography
+                variant="paraSecondary"
+                className="text-gray-600 dark:text-gray-400"
+              >
+                Account Status
+              </Typography>
             </div>
 
             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 text-center transition-colors duration-300">
               <div className="text-4xl mb-3">📅</div>
-              <Typography variant="h3" className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1">
-                {new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+              <Typography
+                variant="h3"
+                className="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-1"
+              >
+                {new Date().toLocaleDateString("en-US", {
+                  month: "short",
+                  year: "numeric",
+                })}
               </Typography>
-              <Typography variant="paraSecondary" className="text-gray-600 dark:text-gray-400">Member Since</Typography>
+              <Typography
+                variant="paraSecondary"
+                className="text-gray-600 dark:text-gray-400"
+              >
+                Member Since
+              </Typography>
             </div>
           </div>
         </section>

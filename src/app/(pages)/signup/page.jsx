@@ -88,7 +88,9 @@ function SignUpContent() {
       });
 
       if (response.success) {
-        toast.success("Signup successful! Redirecting to user type selection...");
+        toast.success(
+          "Signup successful! Redirecting to user type selection..."
+        );
 
         // Store user data and redirect to user-type page
         localStorage.setItem("authToken", response.token);
@@ -125,13 +127,22 @@ function SignUpContent() {
     <div className="flex w-full min-h-screen bg-gradient-to-br from-orange-400 via-pink-500 to-purple-700 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }}></div>
+        <div
+          className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"
+          style={{ animationDuration: "4s" }}
+        ></div>
+        <div
+          className="absolute bottom-20 right-10 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse"
+          style={{ animationDuration: "6s", animationDelay: "1s" }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/2 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-pulse"
+          style={{ animationDuration: "5s", animationDelay: "2s" }}
+        ></div>
       </div>
 
       <BackArrow />
-      
+
       {/* Left Section */}
       <div className="hidden lg:flex w-1/2 items-center justify-center relative p-12">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -144,18 +155,38 @@ function SignUpContent() {
             priority
           />
         </div>
-        <div className={`relative z-10 text-center text-white px-8 max-w-lg transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        <div
+          className={`relative z-10 text-center text-white px-8 max-w-lg transition-all duration-1000 ${
+            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          }`}
+        >
           <div className="mb-8">
             <div className="inline-block p-4 bg-white/10 backdrop-blur-md rounded-2xl mb-6 shadow-2xl">
-              <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              <svg
+                className="w-16 h-16 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                />
               </svg>
             </div>
           </div>
-          <Typography variant="h2" className="text-white block mb-4 font-bold text-4xl lg:text-5xl drop-shadow-2xl">
+          <Typography
+            variant="h2"
+            className="text-white block mb-4 font-bold text-4xl lg:text-5xl drop-shadow-2xl"
+          >
             {RENTAL}
           </Typography>
-          <Typography variant="paraSecondary" className="text-white/90 text-lg leading-relaxed drop-shadow-lg">
+          <Typography
+            variant="paraSecondary"
+            className="text-white/90 text-lg leading-relaxed drop-shadow-lg"
+          >
             Find your perfect stay — Comfort & Convenience at your fingertips.
           </Typography>
           <div className="mt-12 flex items-center justify-center gap-6">
@@ -179,15 +210,26 @@ function SignUpContent() {
 
       {/* Right Section */}
       <div className="relative w-full lg:w-1/2 flex items-center justify-center min-h-screen p-6 md:p-12">
-        <div className={`relative w-full max-w-md transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        <div
+          className={`relative w-full max-w-md transition-all duration-1000 ${
+            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          }`}
+        >
           <div className="relative p-8 md:p-10 bg-white/95 backdrop-blur-xl border border-white/50 rounded-3xl shadow-2xl">
             {/* Decorative corner elements */}
             <div className="absolute top-0 left-0 w-20 h-20 border-t-4 border-l-4 border-purple-600 rounded-tl-3xl opacity-30"></div>
             <div className="absolute bottom-0 right-0 w-20 h-20 border-b-4 border-r-4 border-purple-600 rounded-br-3xl opacity-30"></div>
-            
+
             <div className="text-center mb-8">
-              <Typography variant="h4" className="text-gray-900 font-bold text-3xl mb-2">Create Account</Typography>
-              <p className="text-gray-600 text-sm">Join us and find your perfect stay</p>
+              <Typography
+                variant="h4"
+                className="text-gray-900 font-bold text-3xl mb-2"
+              >
+                Create Account
+              </Typography>
+              <p className="text-gray-600 text-sm">
+                Join us and find your perfect stay
+              </p>
             </div>
 
             <Formik
@@ -213,7 +255,9 @@ function SignUpContent() {
                   </div>
 
                   {Authentication_Fields.filter((field) =>
-                    ["email", "password", "confirmPassword"].includes(field.name)
+                    ["email", "password", "confirmPassword"].includes(
+                      field.name
+                    )
                   ).map((field) => (
                     <FormInput
                       key={field.id}
@@ -227,20 +271,24 @@ function SignUpContent() {
 
                   {/* Terms & Conditions checkbox */}
                   <div className="flex items-start gap-3 p-4 bg-gray-50/80 rounded-xl border border-gray-200">
-                    <Field 
-                      type="checkbox" 
-                      name="terms" 
-                      className="h-5 w-5 mt-0.5 rounded border-gray-300 text-purple-600 focus:ring-purple-500 focus:ring-2 cursor-pointer transition-all" 
+                    <Field
+                      type="checkbox"
+                      name="terms"
+                      className="h-5 w-5 mt-0.5 rounded border-gray-300 text-purple-600 focus:ring-purple-500 focus:ring-2 cursor-pointer transition-all"
                     />
                     <label className="text-sm text-gray-700 leading-relaxed cursor-pointer">
                       I agree to the{" "}
-                      <span className="text-purple-600 font-semibold underline hover:text-purple-700 transition-colors cursor-pointer">
-                        Terms & Conditions
-                      </span>
-                      {" "}and{" "}
-                      <span className="text-purple-600 font-semibold underline hover:text-purple-700 transition-colors cursor-pointer">
-                        Privacy Policy
-                      </span>
+                      <Link href={NAVIGATION_ROUTES.TERMS_CONDITIONS}>
+                        <span className="text-purple-600 font-semibold underline hover:text-purple-700 transition-colors cursor-pointer">
+                          Terms & Conditions
+                        </span>
+                      </Link>{" "}
+                      and{" "}
+                      <Link href={NAVIGATION_ROUTES.PRIVACY_POLICY}>
+                        <span className="text-purple-600 font-semibold underline hover:text-purple-700 transition-colors cursor-pointer">
+                          Privacy Policy
+                        </span>
+                      </Link>
                     </label>
                   </div>
 
@@ -257,17 +305,42 @@ function SignUpContent() {
                   >
                     {isSubmitting ? (
                       <span className="flex items-center justify-center gap-2">
-                        <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <svg
+                          className="animate-spin h-5 w-5"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
                         </svg>
                         Creating your account...
                       </span>
                     ) : (
                       <span className="flex items-center justify-center gap-2">
                         {SIGNUP}
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 7l5 5m0 0l-5 5m5-5H6"
+                          />
                         </svg>
                       </span>
                     )}
@@ -279,7 +352,9 @@ function SignUpContent() {
             {/* Divider */}
             <div className="flex items-center gap-4 my-6">
               <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-              <span className="text-gray-500 text-sm font-medium bg-gray-50 px-3 py-1 rounded-full">OR</span>
+              <span className="text-gray-500 text-sm font-medium bg-gray-50 px-3 py-1 rounded-full">
+                OR
+              </span>
               <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
             </div>
 
@@ -293,8 +368,20 @@ function SignUpContent() {
               {isGoogleLoading ? (
                 <>
                   <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Connecting to Google...
                 </>
@@ -339,19 +426,39 @@ function SignUpContent() {
             <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-center gap-6 text-xs text-gray-500">
                 <div className="flex items-center gap-1">
-                  <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  <svg
+                    className="w-4 h-4 text-green-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   Secure
                 </div>
                 <div className="flex items-center gap-1">
-                  <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  <svg
+                    className="w-4 h-4 text-blue-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   Verified
                 </div>
                 <div className="flex items-center gap-1">
-                  <svg className="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                  <svg
+                    className="w-4 h-4 text-purple-600"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
                   </svg>
                   Trusted
@@ -376,7 +483,9 @@ export default function SignUpPage() {
               <div className="animate-spin rounded-full h-20 w-20 border-b-4 border-t-4 border-white mx-auto mb-4 shadow-lg"></div>
               <div className="absolute inset-0 animate-ping rounded-full h-20 w-20 border-4 border-white/30 mx-auto"></div>
             </div>
-            <p className="text-2xl font-bold text-white drop-shadow-lg">Loading your experience...</p>
+            <p className="text-2xl font-bold text-white drop-shadow-lg">
+              Loading your experience...
+            </p>
             <p className="text-sm text-white/80 mt-2">Please wait a moment</p>
           </div>
         </div>

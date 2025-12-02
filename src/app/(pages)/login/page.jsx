@@ -14,7 +14,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
 import * as Yup from "yup";
-import { LOGIN, NAVIGATION_ROUTES, RENTAL } from "../../constant";
+import { NAVIGATION_ROUTES, RENTAL } from "../../constant";
 
 // Separate component that uses useSearchParams
 function LoginContent() {
@@ -117,7 +117,7 @@ function LoginContent() {
   return (
     <div className="flex min-h-screen w-full bg-gradient-to-br from-orange-400 via-pink-500 to-purple-700">
       <BackArrow />
-      
+
       {/* Left Section - Image & Branding */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 to-purple-900/90 z-10"></div>
@@ -138,11 +138,18 @@ function LoginContent() {
               className="mx-auto drop-shadow-2xl"
             />
           </div>
-          <Typography variant="h1" className="text-white text-4xl font-bold mb-4 drop-shadow-lg">
-            Welcome Back to {RENTAL}
+          <Typography
+            variant="h1"
+            className="text-white text-4xl font-bold mb-4 drop-shadow-lg"
+          >
+            Welcome to {RENTAL}
           </Typography>
-          <Typography variant="h3" className="text-white/90 text-lg max-w-md leading-relaxed">
-            Your perfect stay is just a login away. Find comfort and convenience at your fingertips.
+          <Typography
+            variant="h3"
+            className="text-white/90 text-lg max-w-md leading-relaxed"
+          >
+            Your perfect stay is just a login away. Find comfort and convenience
+            at your fingertips.
           </Typography>
           <div className="mt-12 grid grid-cols-3 gap-8 text-white/80">
             <div className="text-center">
@@ -177,8 +184,11 @@ function LoginContent() {
                   className="mx-auto"
                 />
               </div>
-              <Typography variant="h2" className="text-3xl font-bold text-gray-800 mb-2">
-                Welcome Back
+              <Typography
+                variant="h2"
+                className="text-3xl font-bold text-gray-800 mb-2 block"
+              >
+                Welcome
               </Typography>
               <Typography variant="body" className="text-gray-600">
                 Sign in to continue to your account
@@ -226,9 +236,24 @@ function LoginContent() {
                   >
                     {isSubmitting ? (
                       <span className="flex items-center justify-center gap-2">
-                        <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                        <svg
+                          className="animate-spin h-5 w-5"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          />
                         </svg>
                         Signing in...
                       </span>
@@ -280,8 +305,20 @@ function LoginContent() {
               {isGoogleLoading ? (
                 <span className="flex items-center gap-2">
                   <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
                   </svg>
                   Connecting...
                 </span>
@@ -308,11 +345,17 @@ function LoginContent() {
           <div className="mt-6 text-center">
             <Typography variant="body" className="text-white/80 text-sm">
               By continuing, you agree to our{" "}
-              <Link href="#" className="underline hover:text-white transition-colors">
+              <Link
+                href={NAVIGATION_ROUTES.TERMS_CONDITIONS}
+                className="underline hover:text-white transition-colors"
+              >
                 Terms of Service
               </Link>{" "}
               and{" "}
-              <Link href="#" className="underline hover:text-white transition-colors">
+              <Link
+                href={NAVIGATION_ROUTES.PRIVACY_POLICY}
+                className="underline hover:text-white transition-colors"
+              >
                 Privacy Policy
               </Link>
             </Typography>

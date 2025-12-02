@@ -1,8 +1,11 @@
 "use client";
 
 import { getAllRooms } from "@/lib/API/roomApi";
-import { getWishlist, toggleWishlist as toggleWishlistApi } from "@/lib/API/wishListApi";
-import { Bath, Bed, MapPin, Heart, Home as HomeIcon } from "lucide-react";
+import {
+  getWishlist,
+  toggleWishlist as toggleWishlistApi,
+} from "@/lib/API/wishListApi";
+import { Bath, Bed, Heart, Home as HomeIcon, MapPin } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -41,7 +44,7 @@ export default function Main() {
     const authToken = localStorage.getItem("authToken");
     const userLoggedIn = localStorage.getItem("userLoggedIn");
     setIsLoggedIn(!!authToken && userLoggedIn === "true");
-    
+
     fetchRooms();
     if (authToken && userLoggedIn === "true") {
       fetchWishlist();
@@ -70,7 +73,7 @@ export default function Main() {
       const data = await getWishlist();
       if (data.success) {
         // Create a Set of room IDs from wishlist
-        const ids = new Set(data.wishlist.map(room => room._id));
+        const ids = new Set(data.wishlist.map((room) => room._id));
         setWishlistRoomIds(ids);
       }
     } catch (err) {
@@ -94,7 +97,7 @@ export default function Main() {
     }
 
     // Set loading state for this specific room
-    setWishlistLoading(prev => ({ ...prev, [roomId]: true }));
+    setWishlistLoading((prev) => ({ ...prev, [roomId]: true }));
 
     try {
       const isInWishlist = wishlistRoomIds.has(roomId);
@@ -102,14 +105,14 @@ export default function Main() {
 
       if (data.success) {
         if (isInWishlist) {
-          setWishlistRoomIds(prev => {
+          setWishlistRoomIds((prev) => {
             const newSet = new Set(prev);
             newSet.delete(roomId);
             return newSet;
           });
           toast.success("Removed from wishlist");
         } else {
-          setWishlistRoomIds(prev => new Set([...prev, roomId]));
+          setWishlistRoomIds((prev) => new Set([...prev, roomId]));
           toast.success("Added to wishlist ❤️");
         }
       }
@@ -117,7 +120,7 @@ export default function Main() {
       console.error("Wishlist error:", err);
       toast.error(err.message || "Something went wrong. Please try again.");
     } finally {
-      setWishlistLoading(prev => ({ ...prev, [roomId]: false }));
+      setWishlistLoading((prev) => ({ ...prev, [roomId]: false }));
     }
   };
 
@@ -140,7 +143,10 @@ export default function Main() {
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent mx-auto"></div>
-          <Typography variant="paraPrimary" className="mt-6 text-gray-700 font-medium">
+          <Typography
+            variant="paraPrimary"
+            className="mt-6 text-gray-700 font-medium"
+          >
             Loading amazing rooms...
           </Typography>
         </div>
@@ -153,8 +159,18 @@ export default function Main() {
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
         <div className="text-center max-w-md bg-white rounded-2xl shadow-lg p-8">
           <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-10 h-10 text-red-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           </div>
           <Typography variant="h2" className="text-red-600 mb-3">
@@ -163,7 +179,10 @@ export default function Main() {
           <Typography variant="paraPrimary" className="mb-6 text-gray-600">
             {error}
           </Typography>
-          <Button onClick={fetchRooms} className="bg-blue-600 hover:bg-blue-700">
+          <Button
+            onClick={fetchRooms}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
             Try Again
           </Button>
         </div>
@@ -172,14 +191,20 @@ export default function Main() {
   }
 
   return (
-    <main className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 via-white to-indigo-50 min-h-screen">
+    <main className="w-full py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 via-white to-indigo-50 min-h-screen">
       <section className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-12">
-          <Typography variant="h1" className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+          <Typography
+            variant="h1"
+            className="text-4xl text-blue-600  mb-4 block"
+          >
             Find Your Perfect Room
           </Typography>
-          <Typography variant="paraPrimary" className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <Typography
+            variant="paraPrimary"
+            className="text-gray-600 text-lg max-w-2xl mx-auto"
+          >
             Discover comfortable and affordable rooms in prime locations
           </Typography>
         </div>
@@ -190,22 +215,33 @@ export default function Main() {
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  <svg
+                    className="w-6 h-6"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
                 <div>
-                  <Typography variant="h3" className="text-lg font-bold">
+                  <Typography variant="h4" className="text-lg font-bold block">
                     Want to see more details?
                   </Typography>
-                  <Typography variant="paraPrimary" className="text-white/90 text-sm">
+                  <Typography
+                    variant="paraPrimary"
+                    className="text-white/90 text-sm"
+                  >
                     Login to view full room details and contact owners
                   </Typography>
                 </div>
               </div>
-              <Button 
+              <Button
                 onClick={() => router.push("/login")}
-                className="bg-white text-blue-600 hover:bg-gray-100 font-semibold"
+                className="bg-white text-blue-600 hover:bg-blue-700 hover:text-black font-semibold cursor-pointer"
               >
                 Login Now
               </Button>
@@ -218,7 +254,10 @@ export default function Main() {
             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <HomeIcon className="h-12 w-12 text-gray-400" />
             </div>
-            <Typography variant="h3" className="text-gray-800 text-2xl font-bold mb-3">
+            <Typography
+              variant="h3"
+              className="text-gray-800 text-2xl font-bold mb-3"
+            >
               No rooms available at the moment
             </Typography>
             <Typography variant="paraPrimary" className="text-gray-600">
@@ -249,25 +288,33 @@ export default function Main() {
                         />
                         {/* Overlay Gradient */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        
+
                         {/* Like Button */}
-                        <button 
+                        <button
                           onClick={(e) => toggleWishlist(room._id, e)}
                           disabled={isLoadingWishlist}
                           className={`absolute top-4 right-4 backdrop-blur-sm p-2.5 rounded-full shadow-lg transition-all hover:scale-110 ${
-                            isInWishlist 
-                              ? "bg-red-50" 
+                            isInWishlist
+                              ? "bg-red-50"
                               : "bg-white/90 hover:bg-white"
-                          } ${isLoadingWishlist ? "opacity-50 cursor-not-allowed" : ""}`}
-                          title={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+                          } ${
+                            isLoadingWishlist
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
+                          }`}
+                          title={
+                            isInWishlist
+                              ? "Remove from wishlist"
+                              : "Add to wishlist"
+                          }
                         >
                           {isLoadingWishlist ? (
                             <div className="animate-spin h-5 w-5 border-2 border-red-500 border-t-transparent rounded-full"></div>
                           ) : (
-                            <Heart 
+                            <Heart
                               className={`h-5 w-5 transition-colors ${
-                                isInWishlist 
-                                  ? "fill-red-500 text-red-500" 
+                                isInWishlist
+                                  ? "fill-red-500 text-red-500"
                                   : "text-gray-700"
                               }`}
                             />
@@ -294,7 +341,10 @@ export default function Main() {
                   {/* Room Details */}
                   <div className="p-6">
                     <div className="mb-3">
-                      <Typography variant="h3" className="text-xl font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">
+                      <Typography
+                        variant="h3"
+                        className="text-xl font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors"
+                      >
                         {room.roomTitle}
                       </Typography>
 
@@ -316,12 +366,14 @@ export default function Main() {
                     {/* Facilities */}
                     <div className="flex items-center gap-4 mb-4 text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
                       <span className="flex items-center gap-1.5">
-                        <Bed className="h-4 w-4 text-blue-600" /> 
+                        <Bed className="h-4 w-4 text-blue-600" />
                         <span className="font-medium">{room.beds || 1}</span>
                       </span>
                       <span className="flex items-center gap-1.5">
-                        <Bath className="h-4 w-4 text-purple-600" /> 
-                        <span className="font-medium">{room.bathrooms || 1}</span>
+                        <Bath className="h-4 w-4 text-purple-600" />
+                        <span className="font-medium">
+                          {room.bathrooms || 1}
+                        </span>
                       </span>
                     </div>
 
@@ -358,7 +410,7 @@ export default function Main() {
                     </div>
 
                     {/* Action Button */}
-                    <Button 
+                    <Button
                       onClick={() => handleViewDetails(room._id)}
                       className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg"
                     >

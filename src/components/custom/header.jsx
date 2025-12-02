@@ -36,7 +36,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="w-full bg-gray-100 shadow-md border-b border-gray-200 fixed top-0 z-10">
+    <header className="w-full bg-gray-100 shadow-md border-b border-gray-200 fixed top-0 z-100">
       <div className="max-w-9xl mx-auto flex flex-wrap items-center justify-between px-6 py-3 gap-3">
         {/* Logo + Brand */}
         <div className="flex items-center space-x-2">
@@ -79,7 +79,9 @@ export default function Header() {
                 ))}
 
                 <button onClick={handleLogout}>
-                  <Typography variant="buttonPrimary">Log out</Typography>
+                  <Link href="/">
+                    <Typography variant="buttonPrimary">Log out</Typography>
+                  </Link>
                 </button>
               </nav>
             </SheetContent>

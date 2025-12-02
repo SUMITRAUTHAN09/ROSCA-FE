@@ -9,10 +9,10 @@ export const quickLinks = [
 ];
 
 export const services = [
-  { name: "Room Booking", path: "/" },
-  { name: "Property Listing", path: NAVIGATION_ROUTES.ADD_ROOM },
-  { name: "Room Maintenance", path: NAVIGATION_ROUTES.ABOUT },
-  { name: "Tenant Support", path: NAVIGATION_ROUTES.CONTACT },
+  { name: "Room Booking" },
+  { name: "Property Listing" },
+  { name: "Room Maintenance" },
+  { name: "Tenant Support", path: NAVIGATION_ROUTES.HELP_CENTER },
 ];
 
 export const socials = [

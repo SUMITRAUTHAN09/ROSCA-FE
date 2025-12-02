@@ -1,19 +1,22 @@
 "use client";
 
-import { Typography } from "@/components/custom/typography";
-import { Button } from "@/components/ui/button";
-import { useAuthStore, useRoomStore } from "@/Store/Profile-data";
-import BackArrow from "@/components/custom/back_arrow";
+import EditRoomModal from "@/components/custom/EditRoomModal";
 import Footer from "@/components/custom/footer";
+import { Typography } from "@/components/custom/typography";
+import ViewRoomModal from "@/components/custom/ViewRoomModal";
+import { Button } from "@/components/ui/button";
+import { deleteRoom as deleteRoomApi } from "@/lib/API/roomApi";
+import {
+  getCurrentUserInfo,
+  getUserRooms,
+  uploadProfilePicture,
+} from "@/lib/API/userApi";
+import { useAuthStore, useRoomStore } from "@/Store/Profile-data";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { NAVIGATION_ROUTES } from "../../constant";
-import { getCurrentUserInfo, uploadProfilePicture, getUserRooms } from "@/lib/API/userApi";
-import { deleteRoom as deleteRoomApi } from "@/lib/API/roomApi";
-import ViewRoomModal from "@/components/custom/ViewRoomModal";
-import EditRoomModal from "@/components/custom/EditRoomModal";
 
 export default function ProfilePage() {
   const { rooms, setRooms, updateRoom: updateRoomStore } = useRoomStore();
@@ -24,7 +27,9 @@ export default function ProfilePage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editForm, setEditForm] = useState({});
 
-  const [profilePicturePreview, setProfilePicturePreview] = useState(user?.profilePicture || null);
+  const [profilePicturePreview, setProfilePicturePreview] = useState(
+    user?.profilePicture || null
+  );
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isLoadingData, setIsLoadingData] = useState(true);
@@ -37,7 +42,10 @@ export default function ProfilePage() {
     const loadData = async () => {
       try {
         setIsLoadingData(true);
-        const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+        const token =
+          typeof window !== "undefined"
+            ? localStorage.getItem("authToken")
+            : null;
         if (!token) {
           toast.error("Please log in to view your profile");
           setIsLoadingData(false);
@@ -172,8 +180,12 @@ export default function ProfilePage() {
               <div className="text-2xl">🏠</div>
             </div>
           </div>
-          <Typography variant="h2" className="text-gray-800 font-bold">Loading your profile</Typography>
-          <Typography variant="paraSecondary" className="text-gray-500 mt-2">Fetching your rooms and data...</Typography>
+          <Typography variant="h2" className="text-gray-800 font-bold">
+            Loading your profile
+          </Typography>
+          <Typography variant="paraSecondary" className="text-gray-500 mt-2">
+            Fetching your rooms and data...
+          </Typography>
         </div>
       </div>
     );
@@ -184,9 +196,15 @@ export default function ProfilePage() {
       <div className="mt-20 flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
         <div className="text-center bg-white p-12 rounded-3xl shadow-2xl border border-gray-100 max-w-md">
           <div className="text-7xl mb-6 animate-bounce">🔐</div>
-          <Typography variant="h2" className="mb-4 text-gray-800 font-bold">Welcome Back!</Typography>
-          <Typography variant="paraPrimary" className="mb-8 text-gray-600 leading-relaxed">
-            Sign in to access your profile, manage your properties, and connect with potential tenants
+          <Typography variant="h2" className="mb-4 text-gray-800 font-bold">
+            Welcome Back!
+          </Typography>
+          <Typography
+            variant="paraPrimary"
+            className="mb-8 text-gray-600 leading-relaxed"
+          >
+            Sign in to access your profile, manage your properties, and connect
+            with potential tenants
           </Typography>
           <Link href={NAVIGATION_ROUTES.LOGIN}>
             <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 px-10 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
@@ -205,7 +223,13 @@ export default function ProfilePage() {
           id="profile-hero"
           className="relative w-full bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 text-white overflow-hidden"
         >
-          <BackArrow />
+          <div className="absolute top-4 left-6 z-20 cursor-pointer">
+            <Link href={NAVIGATION_ROUTES.UIPAGE}>
+              <Typography variant="link" className="text-black text-3xl">
+                ←
+              </Typography>
+            </Link>
+          </div>
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
@@ -222,7 +246,7 @@ export default function ProfilePage() {
                     width={128}
                     height={128}
                     className="object-cover w-full h-full"
-                    unoptimized={profilePicturePreview.startsWith('data:')}
+                    unoptimized={profilePicturePreview.startsWith("data:")}
                   />
                 ) : (
                   <span className="text-6xl">👤</span>
@@ -252,7 +276,9 @@ export default function ProfilePage() {
                     Uploading...
                   </span>
                 ) : (
-                  <span className="flex items-center gap-2">✨ Save Picture</span>
+                  <span className="flex items-center gap-2">
+                    ✨ Save Picture
+                  </span>
                 )}
               </Button>
             )}
@@ -273,7 +299,9 @@ export default function ProfilePage() {
               </Typography>
 
               <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                <span className="text-lg">{user?.userType === 'host' ? '🏠' : '👤'}</span>
+                <span className="text-lg">
+                  {user?.userType === "host" ? "🏠" : "👤"}
+                </span>
                 <Typography
                   variant="paraSecondary"
                   className="text-white font-medium capitalize"
@@ -303,24 +331,39 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
               <div className="p-6 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50">
                 <div className="text-4xl mb-2">🏠</div>
-                <Typography variant="h3" className="text-3xl font-bold text-indigo-600 mb-1">
+                <Typography
+                  variant="h3"
+                  className="text-3xl font-bold text-indigo-600 mb-1"
+                >
                   {userRooms.length}
                 </Typography>
-                <Typography variant="paraSecondary" className="text-gray-600">Total Properties</Typography>
+                <Typography variant="paraSecondary" className="text-gray-600">
+                  Total Properties
+                </Typography>
               </div>
               <div className="p-6 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50">
                 <div className="text-4xl mb-2">✅</div>
-                <Typography variant="h3" className="text-3xl font-bold text-green-600 mb-1">
+                <Typography
+                  variant="h3"
+                  className="text-3xl font-bold text-green-600 mb-1"
+                >
                   {userRooms.length}
                 </Typography>
-                <Typography variant="paraSecondary" className="text-gray-600">Active Listings</Typography>
+                <Typography variant="paraSecondary" className="text-gray-600">
+                  Active Listings
+                </Typography>
               </div>
               <div className="p-6 rounded-xl bg-gradient-to-br from-orange-50 to-yellow-50">
                 <div className="text-4xl mb-2">👁️</div>
-                <Typography variant="h3" className="text-3xl font-bold text-orange-600 mb-1">
+                <Typography
+                  variant="h3"
+                  className="text-3xl font-bold text-orange-600 mb-1"
+                >
                   {userRooms.reduce((acc, room) => acc + (room.views || 0), 0)}
                 </Typography>
-                <Typography variant="paraSecondary" className="text-gray-600">Total Views</Typography>
+                <Typography variant="paraSecondary" className="text-gray-600">
+                  Total Views
+                </Typography>
               </div>
             </div>
           </div>
@@ -329,7 +372,12 @@ export default function ProfilePage() {
         <section id="rooms" className="w-full max-w-6xl py-16 px-6">
           <div className="flex items-center justify-between mb-10">
             <div>
-              <Typography variant="h1" className="text-4xl font-bold text-gray-800 mb-2">My Properties</Typography>
+              <Typography
+                variant="h1"
+                className="text-4xl font-bold text-gray-800 mb-2"
+              >
+                My Properties
+              </Typography>
               <Typography variant="paraSecondary" className="text-gray-600">
                 Manage and edit your room listings
               </Typography>
@@ -370,27 +418,43 @@ export default function ProfilePage() {
                     )}
 
                     <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg">
-                      <Typography variant="paraSecondary" className="text-xs font-semibold text-indigo-600 capitalize">
+                      <Typography
+                        variant="paraSecondary"
+                        className="text-xs font-semibold text-indigo-600 capitalize"
+                      >
                         {item.type}
                       </Typography>
                     </div>
                   </div>
 
                   <div className="p-6">
-                    <Typography variant="h4" className="mb-3 block font-bold text-gray-800 line-clamp-1">
+                    <Typography
+                      variant="h4"
+                      className="mb-3 block font-bold text-gray-800 line-clamp-1"
+                    >
                       {item.roomTitle}
                     </Typography>
 
                     <div className="space-y-2 mb-4">
-                      <Typography variant="paraSecondary" className="flex items-center gap-2 text-gray-600">
+                      <Typography
+                        variant="paraSecondary"
+                        className="flex items-center gap-2 text-gray-600"
+                      >
                         <span>📍</span> {item.location}
                       </Typography>
-                      <Typography variant="paraPrimary" className="flex items-center gap-2 text-lg font-semibold text-indigo-600">
+                      <Typography
+                        variant="paraPrimary"
+                        className="flex items-center gap-2 text-lg font-semibold text-indigo-600"
+                      >
                         <span>💰</span> ₹{item.price.toLocaleString()}/month
                       </Typography>
                       <div className="flex items-center gap-4 text-sm text-gray-600">
-                        <span className="flex items-center gap-1">🛏️ {item.beds} Beds</span>
-                        <span className="flex items-center gap-1">🚿 {item.bathrooms} Baths</span>
+                        <span className="flex items-center gap-1">
+                          🛏️ {item.beds} Beds
+                        </span>
+                        <span className="flex items-center gap-1">
+                          🚿 {item.bathrooms} Baths
+                        </span>
                       </div>
                     </div>
 
@@ -424,15 +488,23 @@ export default function ProfilePage() {
           ) : (
             <div className="text-center mt-12 bg-white p-16 rounded-3xl shadow-xl border border-gray-100">
               <div className="text-8xl mb-6 animate-bounce">🏠</div>
-              <Typography variant="h2" className="text-gray-800 mb-4 text-3xl font-bold">
+              <Typography
+                variant="h2"
+                className="text-gray-800 mb-4 text-3xl font-bold"
+              >
                 No Properties Yet
               </Typography>
-              <Typography variant="paraPrimary" className="text-gray-600 mb-8 text-lg max-w-md mx-auto">
-                Start your journey as a host by adding your first property. It only takes a few minutes!
+              <Typography
+                variant="paraPrimary"
+                className="text-gray-600 mb-8 text-lg max-w-md mx-auto"
+              >
+                Start your journey as a host by adding your first property. It
+                only takes a few minutes!
               </Typography>
               <Link href={NAVIGATION_ROUTES.ADD_ROOM}>
                 <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 px-10 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
-                  <span className="text-xl mr-2">+</span> Add Your First Property
+                  <span className="text-xl mr-2">+</span> Add Your First
+                  Property
                 </Button>
               </Link>
             </div>

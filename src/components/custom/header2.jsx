@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import IMAGES from "../../app/assets/images.constant";
 import { NAVIGATION_ROUTES, RENTAL } from "../../app/constant.jsx";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet.jsx";
@@ -33,7 +33,7 @@ export default function Header2() {
   ];
 
   return (
-    <header className="w-full bg-gray-100 shadow-md border-b border-gray-200 fixed top-0 z-10">
+    <header className="w-full bg-gray-100 shadow-md border-b border-gray-200 fixed top-0 z-100">
       <div className="max-w-9xl mx-auto flex flex-wrap items-center justify-between px-6 py-3 gap-3">
         {/* Logo + Brand */}
         <div className="flex items-center space-x-2">
@@ -71,7 +71,10 @@ export default function Header2() {
               <nav className="flex flex-col gap-4 mt-4">
                 {menuItem.map((item) => (
                   <Link key={item.name} href={item.href}>
-                    <Typography variant="body" className="hover:text-blue-600 transition-colors">
+                    <Typography
+                      variant="body"
+                      className="hover:text-blue-600 transition-colors"
+                    >
                       {item.name}
                     </Typography>
                   </Link>
