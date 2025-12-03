@@ -198,12 +198,15 @@ export default function ProfilePage() {
       <div className="mt-20 flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
         <div className="text-center bg-white p-12 rounded-3xl shadow-2xl border border-gray-100 max-w-md">
           <div className="text-7xl mb-6 animate-bounce">🔐</div>
-          <Typography variant="h2" className="mb-4 text-gray-800 font-bold">
+          <Typography
+            variant="h2"
+            className="mb-4 text-gray-800 font-bold block"
+          >
             Welcome Back!
           </Typography>
           <Typography
             variant="paraPrimary"
-            className="mb-8 text-gray-600 leading-relaxed"
+            className="mb-8 text-gray-600 leading-relaxed block"
           >
             Sign in to access your profile, manage your properties, and connect
             with potential tenants

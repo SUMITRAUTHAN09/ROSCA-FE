@@ -34,6 +34,7 @@ export default function Main({ roomType, priceRange, location }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userType, setUserType] = useState(null);
   const [wishlistRoomIds, setWishlistRoomIds] = useState(new Set());
   const [wishlistLoading, setWishlistLoading] = useState({});
   const router = useRouter();
@@ -43,6 +44,17 @@ export default function Main({ roomType, priceRange, location }) {
     const userLoggedIn = localStorage.getItem("userLoggedIn");
 
     setIsLoggedIn(!!authToken && userLoggedIn === "true");
+
+    // Read UserType
+    try {
+      const userStr = localStorage.getItem("user");
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        if (user?.userType) setUserType(user.userType);
+      }
+    } catch {
+      setUserType(null);
+    }
 
     fetchRooms();
     if (authToken && userLoggedIn === "true") fetchWishlist();
@@ -84,6 +96,11 @@ export default function Main({ roomType, priceRange, location }) {
       return;
     }
 
+    if (userType === "host") {
+      toast.error("Hosts cannot add rooms to wishlist");
+      return;
+    }
+
     setWishlistLoading((prev) => ({ ...prev, [roomId]: true }));
 
     try {
@@ -102,7 +119,7 @@ export default function Main({ roomType, priceRange, location }) {
 
         toast.success(result.message);
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to update wishlist");
     } finally {
       setWishlistLoading((prev) => ({ ...prev, [roomId]: false }));
@@ -115,18 +132,15 @@ export default function Main({ roomType, priceRange, location }) {
   };
 
   // ----------------------------
-  // ✅ Filtering System
+  // Filtering System
   // ----------------------------
-
   const filteredRooms = rooms.filter((room) => {
     let ok = true;
 
-    // Filter by roomType
     if (roomType !== "All Types") {
       ok = ok && room.type === roomType;
     }
 
-    // Filter by price range
     const price = room.price;
     if (priceRange !== "Any Budget") {
       if (priceRange === "Below ₹3000") ok = ok && price < 3000;
@@ -137,7 +151,6 @@ export default function Main({ roomType, priceRange, location }) {
       if (priceRange === "Above ₹10000") ok = ok && price > 10000;
     }
 
-    // Filter by location
     if (location !== "") {
       ok = ok && room.location?.toLowerCase().includes(location.toLowerCase());
     }
@@ -147,7 +160,6 @@ export default function Main({ roomType, priceRange, location }) {
 
   // ----------------------------
 
-  // Show loading animation
   if (loading) {
     return (
       <div className="p-10 text-center">
@@ -156,7 +168,6 @@ export default function Main({ roomType, priceRange, location }) {
     );
   }
 
-  // Show error
   if (error) {
     return (
       <div className="p-10 text-center text-red-600">
@@ -196,20 +207,22 @@ export default function Main({ roomType, priceRange, location }) {
                   className="object-cover"
                 />
 
-                {/* Wishlist Button */}
-                <button
-                  onClick={() => toggleWishlist(room._id)}
-                  disabled={wishlistLoading[room._id]}
-                  className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:scale-110 transition"
-                >
-                  <Heart
-                    className={`w-6 h-6 ${
-                      wishlistRoomIds.has(room._id)
-                        ? "fill-red-500 text-red-500"
-                        : "text-gray-700"
-                    }`}
-                  />
-                </button>
+                {/* Wishlist Button — ONLY visible for normal users */}
+                {userType === "user" && (
+                  <button
+                    onClick={() => toggleWishlist(room._id)}
+                    disabled={wishlistLoading[room._id]}
+                    className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:scale-110 transition"
+                  >
+                    <Heart
+                      className={`w-6 h-6 ${
+                        wishlistRoomIds.has(room._id)
+                          ? "fill-red-500 text-red-500"
+                          : "text-gray-700"
+                      }`}
+                    />
+                  </button>
+                )}
               </div>
 
               {/* Room Info */}
@@ -245,7 +258,7 @@ export default function Main({ roomType, priceRange, location }) {
                   </div>
                 </div>
 
-                {/* View Details Button */}
+                {/* View Details */}
                 <Button
                   onClick={() => handleViewDetails(room._id)}
                   className="w-full bg-blue-600 text-white hover:bg-blue-700 rounded-xl py-3 cursor-pointer"

@@ -44,11 +44,11 @@ export default function NavBar({
   };
   const ROOM_TYPE = [
     "All Types",
-    "Single Room",
-    "Double Room",
-    "Shared Room",
-    "Apartment",
-    "Flat",
+    "single room",
+    "double room",
+    "shared room",
+    "apartment",
+    "flat",
   ];
   const ROOM_BUDGED = [
     "All Prices",

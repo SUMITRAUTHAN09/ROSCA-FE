@@ -124,7 +124,7 @@ export default function WishlistPage() {
 
       <main className="max-w-7xl mx-auto px-6 py-24">
         <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
+          <div className="w-full text-center">
             <Typography variant="h1" className="text-3xl font-bold mb-2 block">
               My Wishlist ❤️
             </Typography>

@@ -152,12 +152,23 @@ export default function AddRoom() {
               validationSchema={validationSchema}
               onSubmit={async (values, { setSubmitting, resetForm }) => {
                 setSubmitting(true);
+
+                console.log("🚀 Form submission started");
+                console.log("📝 Original form values:", values);
+
                 try {
                   const formData = new FormData();
+
+                  // Add text fields
                   formData.append("roomTitle", values.roomTitle.trim());
                   formData.append("location", values.location.trim());
                   formData.append("price", Number(values.price));
-                  formData.append("type", values.type);
+
+                  // ✅ CRITICAL FIX: Ensure type is lowercase to match backend enum
+                  const roomType = values.type.toLowerCase().trim();
+                  console.log("🏠 Room type being sent:", roomType);
+                  formData.append("type", roomType);
+
                   formData.append("beds", Number(values.beds) || 1);
                   formData.append("bathrooms", Number(values.bathrooms) || 1);
                   formData.append(
@@ -170,19 +181,36 @@ export default function AddRoom() {
                   );
                   formData.append("contactNumber", values.contactNumber);
                   formData.append("ownerName", values.ownerName.trim());
-                  values.amenities.forEach((amenity) =>
-                    formData.append("amenities", amenity)
-                  );
 
+                  // ✅ CRITICAL FIX: Ensure amenities are lowercase
+                  console.log("🎯 Amenities being sent:", values.amenities);
+                  values.amenities.forEach((amenity) => {
+                    const cleanAmenity = amenity.toLowerCase().trim();
+                    formData.append("amenities", cleanAmenity);
+                  });
+
+                  // Add images
                   if (values.images && values.images.length > 0) {
-                    Array.from(values.images).forEach((file) =>
-                      formData.append("images", file)
-                    );
+                    console.log(`📸 Adding ${values.images.length} images...`);
+                    Array.from(values.images).forEach((file) => {
+                      formData.append("images", file);
+                    });
+                  }
+
+                  // Debug: Log all FormData entries
+                  console.log("📦 Final FormData being sent:");
+                  for (let [key, value] of formData.entries()) {
+                    if (value instanceof File) {
+                      console.log(`  ${key}: File(${value.name})`);
+                    } else {
+                      console.log(`  ${key}: ${value}`);
+                    }
                   }
 
                   const response = await addRoom(formData);
 
                   if (response && response.success) {
+                    console.log("✅ Success response:", response);
                     toast.success("Property listed successfully!");
                     resetForm();
                     setImagePreviews([]);
@@ -191,13 +219,15 @@ export default function AddRoom() {
                         NAVIGATION_ROUTES?.USER_PROFILE || "/user-profile";
                     }, 1000);
                   } else {
+                    console.warn("⚠️ Response missing success flag:", response);
                     toast.error(
                       response?.message ||
                         "Failed to add property. Please try again."
                     );
                   }
                 } catch (err) {
-                  console.error("Add room error:", err);
+                  console.error("❌ Form submission error:", err);
+                  console.error("❌ Error message:", err.message);
                   toast.error(
                     err?.message || "Failed to add property. Please try again."
                   );
@@ -292,7 +322,10 @@ export default function AddRoom() {
                           </label>
                           <Select
                             value={values.type}
-                            onValueChange={(val) => setFieldValue("type", val)}
+                            onValueChange={(val) => {
+                              console.log("Selected room type:", val);
+                              setFieldValue("type", val);
+                            }}
                           >
                             <SelectTrigger className="w-full">
                               <SelectValue placeholder="Select Room Type" />
@@ -300,7 +333,15 @@ export default function AddRoom() {
                             <SelectContent>
                               {ROOMTYPE.map((t) => (
                                 <SelectItem key={t} value={t}>
-                                  {t}
+                                  {/* Capitalize for display */}
+                                  {t
+                                    .split(" ")
+                                    .map(
+                                      (word) =>
+                                        word.charAt(0).toUpperCase() +
+                                        word.slice(1)
+                                    )
+                                    .join(" ")}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -358,7 +399,17 @@ export default function AddRoom() {
                               }
                             >
                               {values.amenities.length > 0
-                                ? values.amenities.join(", ")
+                                ? values.amenities
+                                    .map((a) => {
+                                      // Display with better formatting
+                                      if (a === "wifi") return "WiFi";
+                                      if (a === "AC") return "AC";
+                                      if (a === "tv") return "TV";
+                                      return (
+                                        a.charAt(0).toUpperCase() + a.slice(1)
+                                      );
+                                    })
+                                    .join(", ")
                                 : "Select amenities"}
                             </span>
                             <svg
@@ -384,6 +435,7 @@ export default function AddRoom() {
                                   <CommandItem
                                     key={item}
                                     onSelect={() => {
+                                      console.log("Toggling amenity:", item);
                                       if (values.amenities.includes(item)) {
                                         setFieldValue(
                                           "amenities",
@@ -424,7 +476,17 @@ export default function AddRoom() {
                                           </svg>
                                         )}
                                       </div>
-                                      <span>{item}</span>
+                                      <span>
+                                        {/* Display with better formatting */}
+                                        {item === "wifi"
+                                          ? "WiFi"
+                                          : item === "AC"
+                                          ? "Air Conditioning"
+                                          : item === "tv"
+                                          ? "TV"
+                                          : item.charAt(0).toUpperCase() +
+                                            item.slice(1)}
+                                      </span>
                                     </div>
                                   </CommandItem>
                                 ))}

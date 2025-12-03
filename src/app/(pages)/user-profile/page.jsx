@@ -148,13 +148,13 @@ export default function UserProfilePage() {
           <div className="text-7xl mb-6 animate-bounce">🔐</div>
           <Typography
             variant="h2"
-            className="mb-4 text-gray-800 dark:text-gray-200 font-bold"
+            className="mb-4 text-gray-800 dark:text-gray-200 font-bold block"
           >
             Welcome Back!
           </Typography>
           <Typography
             variant="paraPrimary"
-            className="mb-8 text-gray-600 dark:text-gray-400 leading-relaxed"
+            className="mb-8 text-gray-600 dark:text-gray-400 leading-relaxed block"
           >
             Sign in to access your profile and personalize your experience
           </Typography>

@@ -111,24 +111,24 @@ export default function NavBar({
                     All Types
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onSelect={() => handleSelect("Single Room")}
+                    onSelect={() => handleSelect("single room")}
                   >
                     Single Room
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onSelect={() => handleSelect("Double Room")}
+                    onSelect={() => handleSelect("double room")}
                   >
                     Double Room
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => handleSelect("Flat")}>
+                  <DropdownMenuItem onSelect={() => handleSelect("flat")}>
                     Flat
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onSelect={() => handleSelect("Shared Room")}
+                    onSelect={() => handleSelect("shared room")}
                   >
                     Shared Room
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => handleSelect("Apartment")}>
+                  <DropdownMenuItem onSelect={() => handleSelect("apartment")}>
                     Apartment
                   </DropdownMenuItem>
                 </DropdownMenuContent>

@@ -63,12 +63,12 @@ export default function UserHeader() {
         {isLoggedIn && (
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger onClick={() => setOpen(true)}>
-              <Menu className="w-8 h-8 text-gray-700" />
+              <Menu className="w-8 h-8 text-gray-700 " />
             </SheetTrigger>
 
             <SheetContent
               side="right"
-              className="p-5 h-full flex flex-col justify-between"
+              className="p-5 h-full flex flex-col justify-between "
             >
               {/* 🔹 TOP SECTION: Title + Menu Items */}
               <div>
