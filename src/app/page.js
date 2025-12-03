@@ -247,7 +247,7 @@ export default function Home() {
 
               <Typography
                 variant="h3"
-                className="text-xl font-bold text-gray-900 mb-3"
+                className="text-xl font-bold text-gray-900 mb-3 block"
               >
                 100% Verified
               </Typography>
@@ -277,7 +277,7 @@ export default function Home() {
 
               <Typography
                 variant="h3"
-                className="text-xl font-bold text-gray-900 mb-3"
+                className="text-xl font-bold text-gray-900 mb-3 block"
               >
                 Best Prices
               </Typography>
@@ -307,7 +307,7 @@ export default function Home() {
 
               <Typography
                 variant="h3"
-                className="text-xl font-bold text-gray-900 mb-3"
+                className="text-xl font-bold text-gray-900 mb-3 block"
               >
                 24/7 Support
               </Typography>
