@@ -28,7 +28,8 @@ export const NAVIGATION_ROUTES = {
   PRIVACY_POLICY: "/privacy-policy",
   TERMS_CONDITIONS: "/terms-conditions",
   USER_PROFILE: "/user-profile",
-  HOST_PROFILE: "/user-profile2",
+  HOST_PROFILE: "/host-profile",
+  WISH_LIST: "/wishlist",
 };
 
 // In your constants file

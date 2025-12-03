@@ -5,6 +5,7 @@ import {
   getWishlist,
   toggleWishlist as toggleWishlistApi,
 } from "@/lib/API/wishListApi";
+
 import { Bath, Bed, Heart, Home as HomeIcon, MapPin } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -25,12 +26,10 @@ const getImageUrl = (image) => {
     process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api", "") ||
     "https://rosca-be.vercel.app/";
 
-  const cleanPath = image.startsWith("/") ? image.slice(1) : image;
-
-  return `${baseUrl}/${cleanPath}`;
+  return `${baseUrl}/${image.startsWith("/") ? image.slice(1) : image}`;
 };
 
-export default function Main() {
+export default function Main({ roomType, priceRange, location }) {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -40,17 +39,16 @@ export default function Main() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check if user is logged in using authToken (matches your login/signup flow)
     const authToken = localStorage.getItem("authToken");
     const userLoggedIn = localStorage.getItem("userLoggedIn");
+
     setIsLoggedIn(!!authToken && userLoggedIn === "true");
 
     fetchRooms();
-    if (authToken && userLoggedIn === "true") {
-      fetchWishlist();
-    }
+    if (authToken && userLoggedIn === "true") fetchWishlist();
   }, []);
 
+  // Fetch Rooms
   const fetchRooms = async () => {
     try {
       setLoading(true);
@@ -67,361 +65,198 @@ export default function Main() {
     }
   };
 
-  // Fetch user's wishlist using API
+  // Fetch Wishlist
   const fetchWishlist = async () => {
     try {
       const data = await getWishlist();
       if (data.success) {
-        // Create a Set of room IDs from wishlist
-        const ids = new Set(data.wishlist.map((room) => room._id));
-        setWishlistRoomIds(ids);
+        setWishlistRoomIds(new Set(data.wishlist.map((room) => room._id)));
       }
     } catch (err) {
-      console.error("Failed to fetch wishlist:", err);
+      console.error("Wishlist fetch error:", err);
     }
   };
 
-  // Toggle wishlist (add/remove) using API
-  const toggleWishlist = async (roomId, e) => {
-    e.stopPropagation(); // Prevent triggering view details
-
+  // Toggle Wishlist
+  const toggleWishlist = async (roomId) => {
     if (!isLoggedIn) {
-      toast.error("Please login to save rooms to wishlist", {
-        action: {
-          label: "Login",
-          onClick: () => router.push("/login"),
-        },
-        duration: 4000,
-      });
+      toast.error("Please login to add rooms to wishlist");
       return;
     }
 
-    // Set loading state for this specific room
     setWishlistLoading((prev) => ({ ...prev, [roomId]: true }));
 
     try {
-      const isInWishlist = wishlistRoomIds.has(roomId);
-      const data = await toggleWishlistApi(roomId, isInWishlist);
+      const result = await toggleWishlistApi(roomId);
 
-      if (data.success) {
-        if (isInWishlist) {
-          setWishlistRoomIds((prev) => {
-            const newSet = new Set(prev);
-            newSet.delete(roomId);
-            return newSet;
-          });
-          toast.success("Removed from wishlist");
-        } else {
-          setWishlistRoomIds((prev) => new Set([...prev, roomId]));
-          toast.success("Added to wishlist ❤️");
-        }
+      if (result?.success) {
+        setWishlistRoomIds((prev) => {
+          const updatedSet = new Set(prev);
+          if (updatedSet.has(roomId)) {
+            updatedSet.delete(roomId);
+          } else {
+            updatedSet.add(roomId);
+          }
+          return updatedSet;
+        });
+
+        toast.success(result.message);
       }
     } catch (err) {
-      console.error("Wishlist error:", err);
-      toast.error(err.message || "Something went wrong. Please try again.");
+      toast.error("Failed to update wishlist");
     } finally {
       setWishlistLoading((prev) => ({ ...prev, [roomId]: false }));
     }
   };
 
-  const handleViewDetails = (roomId) => {
-    if (!isLoggedIn) {
-      toast.error("Please login to view room details", {
-        action: {
-          label: "Login",
-          onClick: () => router.push("/login"),
-        },
-        duration: 4000,
-      });
-      return;
-    }
-    router.push(`/item-details/${roomId}`);
+  // Navigate to room details page
+  const handleViewDetails = (id) => {
+    router.push(`/user/rooms/${id}`);
   };
 
+  // ----------------------------
+  // ✅ Filtering System
+  // ----------------------------
+
+  const filteredRooms = rooms.filter((room) => {
+    let ok = true;
+
+    // Filter by roomType
+    if (roomType !== "All Types") {
+      ok = ok && room.type === roomType;
+    }
+
+    // Filter by price range
+    const price = room.price;
+    if (priceRange !== "Any Budget") {
+      if (priceRange === "Below ₹3000") ok = ok && price < 3000;
+      if (priceRange === "₹3000 - ₹6000")
+        ok = ok && price >= 3000 && price <= 6000;
+      if (priceRange === "₹6000 - ₹10000")
+        ok = ok && price >= 6000 && price <= 10000;
+      if (priceRange === "Above ₹10000") ok = ok && price > 10000;
+    }
+
+    // Filter by location
+    if (location !== "") {
+      ok = ok && room.location?.toLowerCase().includes(location.toLowerCase());
+    }
+
+    return ok;
+  });
+
+  // ----------------------------
+
+  // Show loading animation
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent mx-auto"></div>
-          <Typography
-            variant="paraPrimary"
-            className="mt-6 text-gray-700 font-medium"
-          >
-            Loading amazing rooms...
-          </Typography>
-        </div>
+      <div className="p-10 text-center">
+        <Typography variant="h4">Loading rooms...</Typography>
       </div>
     );
   }
 
+  // Show error
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-        <div className="text-center max-w-md bg-white rounded-2xl shadow-lg p-8">
-          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-10 h-10 text-red-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <Typography variant="h2" className="text-red-600 mb-3">
-            Error loading rooms
-          </Typography>
-          <Typography variant="paraPrimary" className="mb-6 text-gray-600">
-            {error}
-          </Typography>
-          <Button
-            onClick={fetchRooms}
-            className="bg-blue-600 hover:bg-blue-700"
-          >
-            Try Again
-          </Button>
-        </div>
+      <div className="p-10 text-center text-red-600">
+        <Typography variant="h4">Error loading rooms</Typography>
+        <p>{error}</p>
       </div>
     );
   }
 
   return (
-    <main className="w-full py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 via-white to-indigo-50 min-h-screen">
-      <section className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <Typography
-            variant="h1"
-            className="text-4xl text-blue-600  mb-4 block"
-          >
-            Find Your Perfect Room
-          </Typography>
-          <Typography
-            variant="paraPrimary"
-            className="text-gray-600 text-lg max-w-2xl mx-auto"
-          >
-            Discover comfortable and affordable rooms in prime locations
-          </Typography>
-        </div>
+    <div className="max-w-9xl mx-auto px-6 py-10">
+      <Typography variant="h2" className="text-center mb-10 block">
+        Available Rooms
+      </Typography>
 
-        {/* Login Banner for Non-logged Users */}
-        {!isLoggedIn && (
-          <div className="mb-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-white shadow-xl">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <Typography variant="h4" className="text-lg font-bold block">
-                    Want to see more details?
-                  </Typography>
-                  <Typography
-                    variant="paraPrimary"
-                    className="text-white/90 text-sm"
-                  >
-                    Login to view full room details and contact owners
-                  </Typography>
-                </div>
-              </div>
-              <Button
-                onClick={() => router.push("/login")}
-                className="bg-white text-blue-600 hover:bg-blue-700 hover:text-black font-semibold cursor-pointer"
-              >
-                Login Now
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {rooms.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-3xl shadow-lg">
-            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <HomeIcon className="h-12 w-12 text-gray-400" />
-            </div>
-            <Typography
-              variant="h3"
-              className="text-gray-800 text-2xl font-bold mb-3"
+      {filteredRooms.length === 0 ? (
+        <Typography variant="h4" className="text-center text-gray-500">
+          No rooms found for selected filters
+        </Typography>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          {filteredRooms.map((room) => (
+            <div
+              key={room._id}
+              className="bg-white rounded-2xl shadow-lg overflow-hidden transition hover:shadow-2xl border border-gray-200"
             >
-              No rooms available at the moment
-            </Typography>
-            <Typography variant="paraPrimary" className="text-gray-600">
-              Check back later for new listings
-            </Typography>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {rooms.map((room) => {
-              const isInWishlist = wishlistRoomIds.has(room._id);
-              const isLoadingWishlist = wishlistLoading[room._id];
+              {/* Room Image */}
+              <div className="relative w-full h-60">
+                <Image
+                  src={
+                    room.images?.length > 0
+                      ? getImageUrl(room.images[0])
+                      : "/placeholder.webp"
+                  }
+                  alt="Room Image"
+                  fill
+                  className="object-cover"
+                />
 
-              return (
-                <div
-                  key={room._id}
-                  className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group"
+                {/* Wishlist Button */}
+                <button
+                  onClick={() => toggleWishlist(room._id)}
+                  disabled={wishlistLoading[room._id]}
+                  className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:scale-110 transition"
                 >
-                  {/* Room Image */}
-                  <div className="relative h-64 bg-gray-200 overflow-hidden">
-                    {room.images && room.images.length > 0 ? (
-                      <>
-                        <Image
-                          src={getImageUrl(room.images[0])}
-                          alt={room.roomTitle}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-500"
-                          unoptimized={process.env.NODE_ENV === "development"}
-                        />
-                        {/* Overlay Gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <Heart
+                    className={`w-6 h-6 ${
+                      wishlistRoomIds.has(room._id)
+                        ? "fill-red-500 text-red-500"
+                        : "text-gray-700"
+                    }`}
+                  />
+                </button>
+              </div>
 
-                        {/* Like Button */}
-                        <button
-                          onClick={(e) => toggleWishlist(room._id, e)}
-                          disabled={isLoadingWishlist}
-                          className={`absolute top-4 right-4 backdrop-blur-sm p-2.5 rounded-full shadow-lg transition-all hover:scale-110 ${
-                            isInWishlist
-                              ? "bg-red-50"
-                              : "bg-white/90 hover:bg-white"
-                          } ${
-                            isLoadingWishlist
-                              ? "opacity-50 cursor-not-allowed"
-                              : ""
-                          }`}
-                          title={
-                            isInWishlist
-                              ? "Remove from wishlist"
-                              : "Add to wishlist"
-                          }
-                        >
-                          {isLoadingWishlist ? (
-                            <div className="animate-spin h-5 w-5 border-2 border-red-500 border-t-transparent rounded-full"></div>
-                          ) : (
-                            <Heart
-                              className={`h-5 w-5 transition-colors ${
-                                isInWishlist
-                                  ? "fill-red-500 text-red-500"
-                                  : "text-gray-700"
-                              }`}
-                            />
-                          )}
-                        </button>
+              {/* Room Info */}
+              <div className="p-6">
+                <Typography variant="h4" className="mb-2">
+                  {room.type}
+                </Typography>
 
-                        {/* Image Count Badge */}
-                        {room.images.length > 1 && (
-                          <div className="absolute bottom-4 right-4 bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-semibold">
-                            +{room.images.length} photos
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <div className="flex items-center justify-center h-full text-gray-400">
-                        <div className="text-center">
-                          <HomeIcon className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-                          <span className="text-sm">No Image Available</span>
-                        </div>
-                      </div>
-                    )}
+                <div className="flex items-center text-gray-600 gap-2 mb-2">
+                  <MapPin className="w-5 h-5" />
+                  <span>{room.location || "No location provided"}</span>
+                </div>
+
+                <Typography variant="h3" className="text-blue-600 mb-4">
+                  ₹{room.price}
+                  <span className="text-gray-500 text-lg"> / month</span>
+                </Typography>
+
+                <div className="flex gap-6 text-gray-700 mb-5">
+                  <div className="flex items-center gap-2">
+                    <Bed className="w-5 h-5" />
+                    <span>{room.beds || 1} Bed</span>
                   </div>
 
-                  {/* Room Details */}
-                  <div className="p-6">
-                    <div className="mb-3">
-                      <Typography
-                        variant="h3"
-                        className="text-xl font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors"
-                      >
-                        {room.roomTitle}
-                      </Typography>
+                  <div className="flex items-center gap-2">
+                    <Bath className="w-5 h-5" />
+                    <span>{room.bathrooms || 1} Bath</span>
+                  </div>
 
-                      <div className="flex items-center text-gray-600 mb-2">
-                        <MapPin className="h-4 w-4 mr-1.5 text-red-500 flex-shrink-0" />
-                        <Typography
-                          variant="paraSecondary"
-                          className="line-clamp-1 text-sm"
-                        >
-                          {room.location}
-                        </Typography>
-                      </div>
-
-                      <span className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">
-                        {room.type}
-                      </span>
-                    </div>
-
-                    {/* Facilities */}
-                    <div className="flex items-center gap-4 mb-4 text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
-                      <span className="flex items-center gap-1.5">
-                        <Bed className="h-4 w-4 text-blue-600" />
-                        <span className="font-medium">{room.beds || 1}</span>
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <Bath className="h-4 w-4 text-purple-600" />
-                        <span className="font-medium">
-                          {room.bathrooms || 1}
-                        </span>
-                      </span>
-                    </div>
-
-                    {/* Amenities */}
-                    {room.amenities && room.amenities.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {room.amenities.slice(0, 2).map((amenity, index) => (
-                          <span
-                            key={index}
-                            className="text-xs bg-green-50 text-green-700 px-2.5 py-1 rounded-full font-medium border border-green-200"
-                          >
-                            ✓ {amenity}
-                          </span>
-                        ))}
-                        {room.amenities.length > 2 && (
-                          <span className="text-xs text-gray-500 px-2.5 py-1 font-medium">
-                            +{room.amenities.length - 2} more
-                          </span>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Price */}
-                    <div className="flex items-end justify-between mb-4">
-                      <div>
-                        <Typography
-                          variant="h4"
-                          className="text-2xl font-bold text-gray-900"
-                        >
-                          ₹{room.price}
-                        </Typography>
-                        <span className="text-sm text-gray-500">per month</span>
-                      </div>
-                    </div>
-
-                    {/* Action Button */}
-                    <Button
-                      onClick={() => handleViewDetails(room._id)}
-                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg"
-                    >
-                      {isLoggedIn ? "View Details" : "Login to View Details"}
-                    </Button>
+                  <div className="flex items-center gap-2">
+                    <HomeIcon className="w-5 h-5" />
+                    <span>{room.size || "—"}</span>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
-    </main>
+
+                {/* View Details Button */}
+                <Button
+                  onClick={() => handleViewDetails(room._id)}
+                  className="w-full bg-blue-600 text-white hover:bg-blue-700 rounded-xl py-3"
+                >
+                  View Details
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

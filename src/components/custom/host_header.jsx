@@ -28,11 +28,11 @@ export default function HostHeader() {
 
   const menuItem = [
     { name: "Home", href: NAVIGATION_ROUTES.HOME },
-    { name: "Add your Property", href: "/add-room" },
+    { name: "Add your Property", href: NAVIGATION_ROUTES.ADD_ROOM },
     { name: "Rooms", href: "#rooms" },
     { name: "About", href: "#about" },
     { name: "Contact", href: "#contact" },
-    { name: "Profile", href: "/user-profile" },
+    { name: "Profile", href: NAVIGATION_ROUTES.HOST_PROFILE },
   ];
 
   return (

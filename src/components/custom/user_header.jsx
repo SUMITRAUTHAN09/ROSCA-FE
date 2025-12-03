@@ -27,9 +27,9 @@ export default function UserHeader() {
   };
 
   const menuItem = [
-    { name: "Profile", href: "/user-profile2" },
+    { name: "Profile", href: NAVIGATION_ROUTES.USER_PROFILE },
     { name: "Contact", href: "#contact" },
-    { name: "Wishlist", href: "/wishlist" },
+    { name: "Wishlist", href: NAVIGATION_ROUTES.WISH_LIST },
   ];
 
   return (
