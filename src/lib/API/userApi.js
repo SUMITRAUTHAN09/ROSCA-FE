@@ -1,13 +1,14 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://rosca-be.vercel.app/api';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://rosca-be.vercel.app/api";
 
-console.log('🔗 User API Base URL:', API_BASE_URL);
+console.log("🔗 User API Base URL:", API_BASE_URL);
 
 // Helper function to get auth token
 const getAuthToken = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('authToken');
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("authToken");
   }
   return null;
 };
@@ -18,7 +19,7 @@ const createAuthInstance = () => {
   return axios.create({
     baseURL: API_BASE_URL,
     headers: {
-      Authorization: token ? `Bearer ${token}` : '',
+      Authorization: token ? `Bearer ${token}` : "",
     },
   });
 };
@@ -28,17 +29,21 @@ const createAuthInstance = () => {
  */
 export const signupUser = async (userData) => {
   try {
-    console.log('📝 Signing up user:', userData.email);
-    const response = await axios.post(`${API_BASE_URL}/users/signup`, userData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    console.log('✅ Signup successful:', response.data);
+    console.log("📝 Signing up user:", userData.email);
+    const response = await axios.post(
+      `${API_BASE_URL}/users/signup`,
+      userData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("✅ Signup successful:", response.data);
     return response.data;
   } catch (error) {
-    console.error('❌ Signup error:', error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || 'Signup failed');
+    console.error("❌ Signup error:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Signup failed");
   }
 };
 
@@ -47,17 +52,101 @@ export const signupUser = async (userData) => {
  */
 export const loginUser = async (credentials) => {
   try {
-    console.log('🔐 Logging in user:', credentials.email);
-    const response = await axios.post(`${API_BASE_URL}/users/login`, credentials, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    console.log('✅ Login successful');
+    console.log("🔐 Logging in user:", credentials.email);
+    const response = await axios.post(
+      `${API_BASE_URL}/users/login`,
+      credentials,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("✅ Login successful");
     return response.data;
   } catch (error) {
-    console.error('❌ Login error:', error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || 'Login failed');
+    console.error("❌ Login error:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Login failed");
+  }
+};
+
+/**
+ * Forgot Password - Send OTP to email - public endpoint
+ */
+export const forgotPassword = async (data) => {
+  try {
+    console.log("📧 Sending password reset OTP to:", data.email);
+    const response = await axios.post(
+      `${API_BASE_URL}/users/forgot-password`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("✅ OTP sent successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "❌ Forgot password error:",
+      error.response?.data || error.message
+    );
+    throw new Error(error.response?.data?.message || "Failed to send OTP");
+  }
+};
+
+/**
+ * Verify OTP - public endpoint
+ */
+export const verifyOtp = async (data) => {
+  try {
+    console.log("🔢 Verifying OTP for:", data.email);
+    const response = await axios.post(
+      `${API_BASE_URL}/users/verify-otp`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("✅ OTP verified successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "❌ OTP verification error:",
+      error.response?.data || error.message
+    );
+    throw new Error(error.response?.data?.message || "Invalid or expired OTP");
+  }
+};
+
+/**
+ * Reset Password - public endpoint
+ */
+export const resetPassword = async (data) => {
+  try {
+    console.log("🔑 Resetting password for:", data.email);
+    const response = await axios.post(
+      `${API_BASE_URL}/users/reset-password`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("✅ Password reset successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "❌ Password reset error:",
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message || "Failed to reset password"
+    );
   }
 };
 
@@ -66,14 +155,16 @@ export const loginUser = async (credentials) => {
  */
 export const getCurrentUserInfo = async () => {
   try {
-    console.log('🔍 Fetching current user info...');
+    console.log("🔍 Fetching current user info...");
     const instance = createAuthInstance();
-    const response = await instance.get('/users/me');
-    console.log('✅ User info fetched:', response.data.user);
+    const response = await instance.get("/users/me");
+    console.log("✅ User info fetched:", response.data.user);
     return response.data;
   } catch (error) {
-    console.error('❌ Error fetching user info:', error);
-    throw new Error(error.response?.data?.message || 'Failed to fetch user info');
+    console.error("❌ Error fetching user info:", error);
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch user info"
+    );
   }
 };
 
@@ -82,14 +173,16 @@ export const getCurrentUserInfo = async () => {
  */
 export const getUserRooms = async () => {
   try {
-    console.log('🏠 Fetching user rooms...');
+    console.log("🏠 Fetching user rooms...");
     const instance = createAuthInstance();
-    const response = await instance.get('/rooms/user/my-rooms');
-    console.log('✅ User rooms fetched:', response.data);
+    const response = await instance.get("/rooms/user/my-rooms");
+    console.log("✅ User rooms fetched:", response.data);
     return response.data;
   } catch (error) {
-    console.error('❌ Error fetching user rooms:', error);
-    throw new Error(error.response?.data?.message || 'Failed to fetch user rooms');
+    console.error("❌ Error fetching user rooms:", error);
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch user rooms"
+    );
   }
 };
 
@@ -99,15 +192,15 @@ export const getUserRooms = async () => {
 export const uploadProfilePicture = async (file) => {
   try {
     if (!file) {
-      throw new Error('No file provided');
+      throw new Error("No file provided");
     }
-    console.log('📤 Uploading profile picture...', file.name);
+    console.log("📤 Uploading profile picture...", file.name);
     const formData = new FormData();
-    formData.append('profilePicture', file);
+    formData.append("profilePicture", file);
 
     const token = getAuthToken();
     if (!token) {
-      throw new Error('No authentication token found');
+      throw new Error("No authentication token found");
     }
 
     const response = await axios.post(
@@ -116,21 +209,23 @@ export const uploadProfilePicture = async (file) => {
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       }
     );
 
-    console.log('✅ Profile picture uploaded successfully:', response.data);
+    console.log("✅ Profile picture uploaded successfully:", response.data);
     if (response.data.user) {
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      localStorage.setItem('authToken', response.data.token || token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.setItem("authToken", response.data.token || token);
     }
 
     return response.data;
   } catch (error) {
-    console.error('❌ Error uploading profile picture:', error);
-    throw new Error(error.response?.data?.message || 'Failed to upload profile picture');
+    console.error("❌ Error uploading profile picture:", error);
+    throw new Error(
+      error.response?.data?.message || "Failed to upload profile picture"
+    );
   }
 };
 
@@ -139,24 +234,28 @@ export const uploadProfilePicture = async (file) => {
  */
 export const updateUserType = async (userType) => {
   try {
-    if (!['host', 'user'].includes(userType)) {
-      throw new Error('Invalid user type');
+    if (!["host", "user"].includes(userType)) {
+      throw new Error("Invalid user type");
     }
 
-    console.log('🔄 Updating user type to:', userType);
+    console.log("🔄 Updating user type to:", userType);
 
     const instance = createAuthInstance();
-    const response = await instance.patch('/users/update-user-type', { userType });
+    const response = await instance.patch("/users/update-user-type", {
+      userType,
+    });
 
-    console.log('✅ User type updated:', response.data);
+    console.log("✅ User type updated:", response.data);
     if (response.data.user) {
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      localStorage.setItem("user", JSON.stringify(response.data.user));
     }
 
     return response.data;
   } catch (error) {
-    console.error('❌ Error updating user type:', error);
-    throw new Error(error.response?.data?.message || 'Failed to update user type');
+    console.error("❌ Error updating user type:", error);
+    throw new Error(
+      error.response?.data?.message || "Failed to update user type"
+    );
   }
 };
 
@@ -165,48 +264,49 @@ export const updateUserType = async (userType) => {
  */
 export const logoutUser = async () => {
   try {
-    console.log('👋 Logging out user...');
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('user');
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userLoggedIn');
-      console.log('✅ User logged out successfully');
+    console.log("👋 Logging out user...");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("user");
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userLoggedIn");
+      console.log("✅ User logged out successfully");
     }
     return { success: true };
   } catch (error) {
-    console.error('❌ Error during logout:', error);
+    console.error("❌ Error during logout:", error);
     throw error;
   }
 };
+
 /**
  * Get single room by ID - VIEW button
  */
 export const getRoomById = async (roomId) => {
   try {
-    console.log('🔍 Fetching room by ID:', roomId);
+    console.log("🔍 Fetching room by ID:", roomId);
     const instance = createAuthInstance();
     const response = await instance.get(`/rooms/${roomId}`);
-    console.log('✅ Room fetched:', response.data);
+    console.log("✅ Room fetched:", response.data);
     return response.data;
   } catch (error) {
-    console.error('❌ Error fetching room:', error);
-    throw new Error(error.response?.data?.message || 'Failed to fetch room');
+    console.error("❌ Error fetching room:", error);
+    throw new Error(error.response?.data?.message || "Failed to fetch room");
   }
 };
 
 /**
- * Update room - EDIT button  
+ * Update room - EDIT button
  */
 export const updateRoom = async (roomId, roomData) => {
   try {
-    console.log('✏️ Updating room:', roomId);
+    console.log("✏️ Updating room:", roomId);
     const instance = createAuthInstance();
     const response = await instance.put(`/rooms/${roomId}`, roomData);
-    console.log('✅ Room updated:', response.data);
+    console.log("✅ Room updated:", response.data);
     return response.data;
   } catch (error) {
-    console.error('❌ Error updating room:', error);
-    throw new Error(error.response?.data?.message || 'Failed to update room');
+    console.error("❌ Error updating room:", error);
+    throw new Error(error.response?.data?.message || "Failed to update room");
   }
 };
 
@@ -215,13 +315,13 @@ export const updateRoom = async (roomId, roomData) => {
  */
 export const deleteRoom = async (roomId) => {
   try {
-    console.log('🗑️ Deleting room:', roomId);
+    console.log("🗑️ Deleting room:", roomId);
     const instance = createAuthInstance();
     const response = await instance.delete(`/rooms/${roomId}`);
-    console.log('✅ Room deleted');
+    console.log("✅ Room deleted");
     return response.data;
   } catch (error) {
-    console.error('❌ Error deleting room:', error);
-    throw new Error(error.response?.data?.message || 'Failed to delete room');
+    console.error("❌ Error deleting room:", error);
+    throw new Error(error.response?.data?.message || "Failed to delete room");
   }
 };
